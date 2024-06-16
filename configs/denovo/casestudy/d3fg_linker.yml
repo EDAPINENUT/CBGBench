@@ -1,0 +1,48 @@
+model:
+  type: targetdiff
+  checkpoint: ./logs/denovo/d3fg_linker/d3fg_linker_2024_05_05__20_06_08/checkpoints/4840000.pt
+
+data:
+  test: 
+    name: pl_fg
+    raw_path: ./data/case_study
+    split_path: ./data/case_study/split_by_name.pt
+    processed_dir: ./data/case_study/processed/
+    transform:
+      - type: select_linker
+      - type: featurize_protein_fa
+      - type: remove_ligand
+      - type: center_pos
+        center_flag: protein
+      
+      - type: load_ctx
+        ctx_path: ./results/denovo/d3fg_fg/casestudy_context
+        mode: basic
+
+      - type: assign_linkernum
+        distribution: prior_distcond
+      - type: assign_atomtype
+        distribution: uniform
+        mode: basic
+      - type: assign_molpos
+        distribution: gaussian
+      
+      - type: merge_ctx_gen
+      - type: merge
+        keys: 
+          - protein
+          - ligand
+
+  follow_batch: 
+    - protein_element
+    - ligand_element
+    
+
+sampling:
+  seed: 2022
+  num_samples: 2000
+  translate: true
+
+reconstruct:
+  basic_mode: true
+

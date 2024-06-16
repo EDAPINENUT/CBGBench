@@ -1,0 +1,67 @@
+
+model:
+  type: diffbp
+  encoder:
+    type: unitransformer
+    node_feat_dim: 128
+    n_heads: 16
+    num_layers: 9
+  generator:
+    pos_schedule:
+      type: sigmoid
+      beta_start: 1.e-7
+      beta_end: 2.e-3
+    atom_schedule: 
+      type: uniform
+    num_diffusion_timesteps: 1000
+    time_sampler: symmetric
+    com_schedule:
+      type: log
+      sigma_min: 1.e-7
+      sigma_max: 5.0
+  embedder:
+    emb_dim: 128 #emb_dim should equal to node_feat_dim
+    atom:
+      type: linear
+    residue:
+      type: linear
+
+
+data:
+  train: !include ../common/fa_data_train.yml
+  follow_batch: 
+    - protein_element
+    - ligand_element
+    
+
+train:
+  loss_weights:
+    pos: 1.0
+    atom: 1.0
+    com: 1.0
+    inter: 1.0
+  max_iters: 1000000
+  report_freq: 100
+  batch_size: 4
+  seed: 2022
+  max_grad_norm: 8.0
+  optimizer:
+    type: adam
+    lr: 5.e-4
+    weight_decay: 0.0
+    beta1: 0.95
+    beta2: 0.999
+  scheduler:
+    type: plateau
+    factor: 0.6
+    patience: 10
+    min_lr: 1.e-6
+
+eval:
+  val_freq: 1000
+  force_save_freq: 100000
+  metrics:
+    - name: auroc
+      true_key: v0
+      pred_key: c_pred
+      mask_key: mask_gen

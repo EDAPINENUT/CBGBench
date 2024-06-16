@@ -1,0 +1,41 @@
+model:
+  type: diffsbdd
+  checkpoint: ./logs/denovo/diffsbdd/diffsbdd_2024_05_13__15_53_50/checkpoints/2418000.pt
+
+data:
+  test: 
+    name: pl_fa
+    raw_path: ./data/case_study
+    split_path: ./data/case_study/split_by_name.pt
+    processed_dir: ./data/case_study/processed/
+    transform:
+      - type: featurize_protein_fa
+      - type: remove_ligand
+      
+      - type: center_pos
+        center_flag: protein
+
+      - type: assign_molsize
+        distribution: prior_distcond
+      - type: assign_atomtype
+        distribution: gaussian
+        mode: basic
+      - type: assign_molpos
+        distribution: zero_mean_gaussian
+
+      - type: merge
+        keys: 
+          - protein
+          - ligand
+
+  follow_batch: 
+    - protein_element
+    - ligand_element
+
+sampling:
+  seed: 2022
+  num_samples: 500
+  translate: true
+
+reconstruct:
+  basic_mode: true

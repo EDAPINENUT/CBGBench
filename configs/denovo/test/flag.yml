@@ -1,0 +1,29 @@
+model:
+  type: flag
+  checkpoint: ./logs/denovo/flag/flag_2024_05_16__21_58_22/checkpoints/264000.pt
+
+data:
+  batch_size: 1
+  test: 
+    name: pl_arfg
+    raw_path: ../datasets/crossdocked_v1.1_rmsd1.0_pocket10
+    split_path: ./data/split_by_name_10m.pt
+    transform:
+      - type: featurize_protein_fa
+      - type: remove_ligand
+      - type: init_empty_mol
+        mode: basic
+      - type: merge
+        keys: 
+        - protein
+        - ligand
+        to_graph: false
+
+
+sampling:
+  seed: 2022
+  num_samples: 200
+  translate: false
+
+reconstruct:
+  basic_mode: true

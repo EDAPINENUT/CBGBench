@@ -1,0 +1,52 @@
+name: pl_decomp
+version: scaffold
+raw_path: ../datasets/crossdocked_v1.1_rmsd1.0_pocket10
+split_path: ./data/split_by_name_10m.pt
+transform:
+  - type: choose_ctx_gen
+  - type: featurize_protein_fa
+  - type: featurize_ligand_gen_ctx_ar
+    mode: basic
+
+  - type: count_bond_neighbors
+    graph_name: ligand
+
+  - type: mixed_mask
+    mask_target: ligand
+  
+  - type: count_bond_neighbors
+    graph_name: ligand_context
+  
+  - type: build_focal_for_ligand
+  - type: sample_edge_for_ligand
+    k: 8
+  - type: contrastive_sample
+
+  - type: add_pos_noise
+    noise_std: 0.1
+
+  - type: hetero_merge
+    keys: 
+      - protein
+      - ligand_masked
+      - ligand_context
+      - ligand_masked_contrast
+      - protein_cross_ligand_masked
+      - ligand_context_cross_ligand_masked
+      - ligand_context_cross_ligand_masked_contrast
+      - edge_graph
+
+    ignore_attrs:
+      - num_neighbors
+      - num_neighbors_per_bond
+      - context_idx
+      - masked_idx
+      - atom_valence
+      - gen_bond_index
+      - gen_bond_type
+      - ctx_bond_index
+      - ctx_bond_type
+      - cross_bond_index
+      - cross_bond_type
+
+
