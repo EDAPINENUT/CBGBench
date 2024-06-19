@@ -1,0 +1,43 @@
+model:
+  type: pocket2mol
+  checkpoint: ./logs/denovo/pocket2mol/pocket2mol_2024_04_15__16_23_49/checkpoints/410000.pt
+data:
+  batch_size: 1
+  test: 
+    name: pl_fa
+    raw_path: ./data/case_study
+    split_path: ./data/case_study/split_by_name.pt
+    processed_dir: ./data/case_study/processed/
+    transform:
+      - type: featurize_protein_fa   
+      - type: remove_ligand
+
+      - type: init_empty_mol
+        mode: basic
+
+      - type: prefixed_mask
+
+      - type: count_bond_neighbors
+        graph_name: ligand
+      - type: hetero_merge
+        keys: 
+          - protein
+          - ligand_masked
+          - ligand_context
+
+        ignore_attrs:
+          - num_neighbors
+          - num_neighbors_per_bond
+          - context_idx
+          - masked_idx
+          - atom_valence
+    
+
+sampling:
+  seed: 2022
+  num_samples: 500
+  translate: false
+  hetero_to_graph: true
+
+reconstruct:
+  basic_mode: true

@@ -1,0 +1,25 @@
+model:
+  type: graphbp
+  checkpoint: ./logs/denovo/graphbp/graphbp_2024_05_19__00_32_47/checkpoints/78000.pt
+
+
+data:
+  batch_size: 1
+  test: 
+    name: pl_fa
+    raw_path: ./data/case_study
+    split_path: ./data/case_study/split_by_name.pt
+    processed_dir: ./data/case_study/processed/
+    transform:
+      - type: featurize_protein_fa   
+      - type: remove_ligand
+      - type: ar_init_mol_geo
+        mode: basic
+
+sampling:
+  seed: 2022
+  num_samples: 8000
+  translate: false
+
+reconstruct:
+  basic_mode: true

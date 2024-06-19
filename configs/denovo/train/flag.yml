@@ -1,0 +1,54 @@
+model:
+  type: flag
+  encoder:
+    type: gvptransformer
+    node_feat_dim: 256
+    vec_feat_dim: 64
+    num_layers: 6
+
+  embedder:
+    emb_dim: 256 #emb_dim should equal to node_feat_dim
+    atom:
+      type: linear
+    residue:
+      type: linear
+    vec:
+      type: linear
+      vec_emb_dim: 64
+
+
+data:
+  train: !include ../common/arfg_data_train.yml
+  collate_fn:
+    type: flag
+  follow_batch:
+    - protein_element
+
+train:
+  loss_weights:
+    type: 1.0
+    comb: 1.0
+    focal: 1.0
+    dm: 1.0
+    torsion: 1.0
+    sr: 1.0
+
+  max_iters: 500000
+  report_freq: 100
+  batch_size: 8
+  seed: 2022
+  max_grad_norm: 100.0
+  optimizer:
+    type: adam
+    lr: 1.e-4
+    weight_decay: 0.0
+    beta1: 0.99
+    beta2: 0.999
+  scheduler:
+    type: plateau
+    factor: 0.6
+    patience: 100
+    min_lr: 1.e-5 
+
+eval:
+  val_freq: 1000

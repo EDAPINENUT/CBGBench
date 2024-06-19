@@ -1,0 +1,21 @@
+name: pl_fg
+raw_path: ../datasets/crossdocked_v1.1_rmsd1.0_pocket10
+split_path: ./data/split_by_name_10m.pt
+transform:
+  - type: select_fg
+  - type: featurize_protein_fg
+    mode: fg_only
+  - type: featurize_ligand_fg
+    mode: fg_only
+  - type: add_pos_noise
+    noise_std: 0.1
+    frame_mode: true
+  - type: center_frame_pos
+    center_flag: protein
+  - type: merge
+    keys: 
+      - protein
+      - ligand
+
+  
+

@@ -1,0 +1,43 @@
+model:
+  type: difffg
+  checkpoint: ./logs/denovo/d3fg_fg/d3fg_fg_2024_05_05__20_05_36/checkpoints/951000.pt
+
+data:
+  test: 
+    name: pl_fg
+    raw_path: ../datasets/crossdocked_v1.1_rmsd1.0_pocket10
+    split_path: ./data/split_by_name_10m.pt
+    transform:
+      - type: select_fg
+      - type: remove_ligand
+      - type: featurize_protein_fg
+        mode: fg_only
+      - type: center_frame_pos
+        center_flag: protein
+
+      - type: assign_fgnum
+        distribution: prior_distcond
+      - type: assign_fgtype
+        distribution: uniform
+        mode: fg_only
+      - type: assign_fgpos
+        distribution: gaussian
+      - type: assign_fgori
+        distribution: uniform
+      - type: merge
+        keys: 
+          - protein
+          - ligand
+
+  follow_batch: 
+    - protein_type_fg
+    - ligand_type_fg
+    
+
+sampling:
+  seed: 2022
+  num_samples: 200
+  translate: false
+
+fg2mol:
+  basic_mode: true

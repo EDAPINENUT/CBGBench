@@ -1,0 +1,24 @@
+name: pl_arfg
+raw_path: ../datasets/crossdocked_v1.1_rmsd1.0_pocket10
+split_path: ./data/split_by_name_10m.pt
+transform:
+  - type: featurize_protein_fa
+  - type: featurize_ligand_ar
+    mode: basic
+  
+  - type: count_bond_neighbors
+    graph_name: ligand
+
+  - type: merge
+    keys: 
+    - protein
+    - ligand
+    to_graph: false
+
+  - type: bfs_motif_mask
+    min_ratio: 0.0
+    max_ratio: 1.2
+    min_num_masked: 1
+    min_num_unmasked: 0
+
+  

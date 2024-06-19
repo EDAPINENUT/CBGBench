@@ -1,0 +1,21 @@
+name: pl_decomp
+version: scaffold
+raw_path: ../datasets/crossdocked_v1.1_rmsd1.0_pocket10
+split_path: ./data/split_by_name_10m.pt
+transform:
+  - type: choose_ctx_gen
+  - type: featurize_protein_fa
+  - type: featurize_ligand_fa
+    mode: basic
+  - type: add_pos_noise
+    noise_std: 0.1
+  - type: center_pos
+    center_flag: ligand
+    mask_flag: ctx_flag
+  - type: merge
+    keys: 
+      - protein
+      - ligand
+
+  
+

@@ -1,0 +1,67 @@
+model:
+  type: difffg
+  encoder:
+    type: itatransformer
+    node_feat_dim: 256
+    n_heads: 16
+    num_layers: 9
+  generator:
+    pos_schedule:
+      type: sigmoid
+      beta_start: 1.e-7
+      beta_end: 2.e-3
+    rot_schedule:
+      type: cosine
+      cosine_s: 0.01
+    fg_schedule: 
+      type: cosine
+      cosine_s: 0.01
+
+    num_diffusion_timesteps: 1000
+    time_sampler: symmetric
+  embedder:
+    type: fg
+    emb_dim: 256 #emb_dim should equal to node_feat_dim
+    fg:
+      type: linear
+    residue:
+      type: frame
+
+
+data:
+  train: !include ../common/fg_data_train.yml
+  follow_batch: 
+    - protein_type_fg
+    - ligand_type_fg
+    
+
+train:
+  loss_weights:
+    pos: 1.0
+    rot: 1.0
+    atom: 100.0
+  max_iters: 500000
+  report_freq: 100
+  batch_size: 4
+  seed: 2022
+  max_grad_norm: 8.0
+  optimizer:
+    type: adam
+    lr: 5.e-4
+    weight_decay: 0.0
+    beta1: 0.95
+    beta2: 0.999
+  scheduler:
+    type: plateau
+    factor: 0.6
+    patience: 10
+    min_lr: 1.e-6
+
+eval:
+  val_freq: 1000
+  metrics:
+    - name: auroc
+      true_key: v0
+      pred_key: c_pred
+      mask_key: mask_gen
+      tag: fg

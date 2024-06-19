@@ -1,0 +1,40 @@
+model:
+  type: diffsbdd
+  checkpoint: ./logs/denovo/diffsbdd/
+
+data:
+  test: 
+    name: pl_fa
+    raw_path: ../datasets/crossdocked_v1.1_rmsd1.0_pocket10
+    split_path: ./data/split_by_name_10m.pt
+    transform:
+      - type: featurize_protein_fa
+      - type: remove_ligand
+      
+      - type: center_pos
+        center_flag: protein
+
+      - type: assign_molsize
+        distribution: prior_distcond
+      - type: assign_atomtype
+        distribution: gaussian
+        mode: basic
+      - type: assign_molpos
+        distribution: zero_mean_gaussian
+
+      - type: merge
+        keys: 
+          - protein
+          - ligand
+
+  follow_batch: 
+    - protein_element
+    - ligand_element
+
+sampling:
+  seed: 2022
+  num_samples: 200
+  translate: true
+
+reconstruct:
+  basic_mode: true

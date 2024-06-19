@@ -1,0 +1,58 @@
+
+model:
+  type: targetdiff
+  checkpoint: ./logs/frag/targetdiff/targetdiff-resume_2024_06_03__23_12_36/checkpoints/350000.pt
+
+data:
+  test: 
+    name: pl_decomp
+    version: frag
+    raw_path: ./raw_data/crossdocked_v1.1_rmsd1.0_pocket10
+    split_path: ./data/split_by_name_10m.pt
+    transform:
+      - type: choose_ctx_gen
+        sampling: fix_zero
+
+      - type: featurize_protein_fa
+      - type: remove_ligand_gen
+        mode: add_aromatic
+
+      - type: assign_gensize
+        distribution: prior_distcond
+      - type: assign_genatomtype
+        distribution: uniform
+        mode: add_aromatic
+      
+      - type: center_pos
+        center_flag: ligand
+        mask_flag: ctx_flag
+      - type: assign_genpos
+        distribution: gaussian
+
+      - type: merge
+        keys: 
+          - protein
+          - ligand
+        excluded_subkeys:
+          - gen_bond_index
+          - gen_bond_type
+          - bond_index
+          - bond_type
+          - ctx_bond_index
+          - ctx_bond_type
+          - gen_index
+          - ctx_index
+          - cross_bond_index
+          - cross_bond_type
+
+  follow_batch: 
+    - protein_element
+    - ligand_element
+
+sampling:
+  seed: 2022
+  num_samples: 100
+  translate: true
+
+reconstruct:
+  basic_mode: false

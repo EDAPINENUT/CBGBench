@@ -1,0 +1,65 @@
+model:
+  type: pocket2mol
+  encoder:
+    type: gvptransformer
+    node_feat_dim: 256
+    vec_feat_dim: 64
+    num_layers: 6
+
+  embedder:
+    emb_dim: 256 #emb_dim should equal to node_feat_dim
+    atom:
+      type: linear
+    residue:
+      type: linear
+    vec:
+      type: linear
+      vec_emb_dim: 64
+
+
+data:
+  train: !include ../common/ar_data_train.yml
+  follow_batch: 
+    - protein_element
+    - ligand_element
+    
+
+train:
+  loss_weights:
+    atom: 1.0
+    edge: 1.0
+    real: 1.0
+    fake: 1.0
+    lig_focal: 1.0
+    rec_focal: 1.0
+    pos_from_lig: 1.0
+    pos_from_rec: 1.0
+
+  max_iters: 500000
+  report_freq: 100
+  batch_size: 8
+  seed: 2022
+  max_grad_norm: 100.0
+  optimizer:
+    type: adam
+    lr: 2.e-4
+    weight_decay: 0.0
+    beta1: 0.99
+    beta2: 0.999
+  scheduler:
+    type: plateau
+    factor: 0.6
+    patience: 8
+    min_lr: 1.e-5 
+
+eval:
+  val_freq: 1000
+  metrics:
+    - name: auroc
+      true_key: type_true
+      pred_key: type_pred
+      tag: atom
+    - name: auroc
+      true_key: edge_true
+      pred_key: edge_pred
+      tag: edge
