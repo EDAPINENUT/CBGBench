@@ -253,26 +253,28 @@ bash generate.sh --method d3fg_linker --task denovo --tag {tag} --checkpoint # g
 ```
 
 ## Evaluation
-#### Train from scratch
-If you have trained the model by yourself, run
+Run the following: 
 ```
 cd evaluate_scripts
-bash evaluate.sh --method xx --task xx --tag selftrain 
-
-e.g.
-# bash evaluate.sh --method targetdiff --task denovo --tag selftrain
-# bash evaluate.sh --method targetdiff --task frag --tag selftrain
-# bash evaluate.sh --method targetdiff --task linker --tag selftrain
-# bash evaluate.sh --method targetdiff --task scaffold --tag selftrain
-# bash evaluate.sh --method targetdiff --task sidechain --tag selftrain
+bash evaluate.sh --method {method} --task {task} --tag {tag}
 ```
 
-#### Use the pretrained models
+For example, if you have trained TargetDiff by yourself, run
+
+
+```
+bash evaluate.sh --method targetdiff --task denovo --tag selftrain
+bash evaluate.sh --method targetdiff --task frag --tag selftrain
+bash evaluate.sh --method targetdiff --task linker --tag selftrain
+bash evaluate.sh --method targetdiff --task scaffold --tag selftrain
+bash evaluate.sh --method targetdiff --task sidechain --tag selftrain
+```
+
 Or if you have downloaded pretrained models, please run
 
 ```
 cd evaluate_scripts
-bash bash evaluate.sh --method xx --task xx --tag pretrained 
+bash bash evaluate.sh --method {method} --task {task} --tag pretrained 
 ```
 
 ## TODO List
