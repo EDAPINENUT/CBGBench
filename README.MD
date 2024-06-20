@@ -290,6 +290,5 @@ If you find the repository is helpful to your research or projects, please refer
       year={2024},
       eprint={2406.10840},
       archivePrefix={arXiv},
-      primaryClass={id='cs.LG' full_name='Machine Learning' is_active=True alt_name=None in_archive='cs' is_general=False}
 }
 ```
