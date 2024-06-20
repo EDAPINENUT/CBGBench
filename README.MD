@@ -284,5 +284,12 @@ bash bash evaluate.sh --method {method} --task {task} --tag pretrained
 
 If you find the repository is helpful to your research or projects, please refer to our benchmark paper:
 ```
-TODO
+@misc{lin2024cbgbench,
+      title={CBGBench: Fill in the Blank of Protein-Molecule Complex Binding Graph}, 
+      author={Haitao Lin and Guojiang Zhao and Odin Zhang and Yufei Huang and Lirong Wu and Zicheng Liu and Siyuan Li and Cheng Tan and Zhifeng Gao and Stan Z. Li},
+      year={2024},
+      eprint={2406.10840},
+      archivePrefix={arXiv},
+      primaryClass={id='cs.LG' full_name='Machine Learning' is_active=True alt_name=None in_archive='cs' is_general=False}
+}
 ```
