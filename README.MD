@@ -278,7 +278,7 @@ bash bash evaluate.sh --method {method} --task {task} --tag pretrained
 ```
 
 ## TODO List
-1. Use the pretrained models to generate on real-world targets flexibly.
+1. Use the pretrained models to generate molecules on real-world targets flexibly.
 
 2. Include more models, such as 3DSBDD, DecompDiff, VoxMol and LiGAN.
 
@@ -290,5 +290,25 @@ If you find the repository is helpful to your research or projects, please refer
       year={2024},
       eprint={2406.10840},
       archivePrefix={arXiv},
+}
+```
+
+And our former works of DiffBP and D3FG:
+```
+@misc{lin2022diffbp,
+      title={DiffBP: Generative Diffusion of 3D Molecules for Target Protein Binding}, 
+      author={Haitao Lin and Yufei Huang and Meng Liu and Xuanjing Li and Shuiwang Ji and Stan Z. Li},
+      year={2022},
+      eprint={2211.11214},
+      archivePrefix={arXiv},
+      primaryClass={id='q-bio.BM' full_name='Biomolecules' is_active=True alt_name=None in_archive='q-bio' is_general=False description='DNA, RNA, proteins, lipids, etc.; molecular structures and folding kinetics; molecular interactions; single-molecule manipulation.'}
+}
+@inproceedings{
+lin2023functionalgroupbased,
+title={Functional-Group-Based Diffusion for Pocket-Specific Molecule Generation and Elaboration},
+author={Haitao Lin and Yufei Huang and Odin Zhang and Yunfan Liu and Lirong Wu and Siyuan Li and Zhiyuan Chen and Stan Z. Li},
+booktitle={Thirty-seventh Conference on Neural Information Processing Systems},
+year={2023},
+url={https://openreview.net/forum?id=lRG11M91dx}
 }
 ```
