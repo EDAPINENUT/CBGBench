@@ -304,11 +304,11 @@ And our former works of DiffBP and D3FG:
       primaryClass={id='q-bio.BM' full_name='Biomolecules' is_active=True alt_name=None in_archive='q-bio' is_general=False description='DNA, RNA, proteins, lipids, etc.; molecular structures and folding kinetics; molecular interactions; single-molecule manipulation.'}
 }
 @inproceedings{
-lin2023functionalgroupbased,
-title={Functional-Group-Based Diffusion for Pocket-Specific Molecule Generation and Elaboration},
-author={Haitao Lin and Yufei Huang and Odin Zhang and Yunfan Liu and Lirong Wu and Siyuan Li and Zhiyuan Chen and Stan Z. Li},
-booktitle={Thirty-seventh Conference on Neural Information Processing Systems},
-year={2023},
-url={https://openreview.net/forum?id=lRG11M91dx}
+    lin2023functionalgroupbased,
+    title={Functional-Group-Based Diffusion for Pocket-Specific Molecule Generation and Elaboration},
+    author={Haitao Lin and Yufei Huang and Odin Zhang and Yunfan Liu and Lirong Wu and Siyuan Li and Zhiyuan Chen and Stan Z. Li},
+    booktitle={Thirty-seventh Conference on Neural Information Processing Systems},
+    year={2023},
+    url={https://openreview.net/forum?id=lRG11M91dx}
 }
 ```
