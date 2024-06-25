@@ -248,7 +248,7 @@ Or you want to test the checkpoint of the 100000-th.
 bash generate.sh --method targetdiff --task denovo --tag selftrain --checkpoint 100000
 ```
 
-Note that `D3FG` uses two-step generation strategy, so that the command should be
+Note that `D3FG` uses two-step generation strategy, so the command should be
 ```
 bash generate.sh --method d3fg_fg --task denovo --tag {tag} --checkpoint  # generate the functional groups
 bash generate.sh --method d3fg_linker --task denovo --tag {tag} --checkpoint # generate the linkers
@@ -282,7 +282,10 @@ bash bash evaluate.sh --method {method} --task {task} --tag pretrained
 ## TODO List
 1. Use the pretrained models to generate molecules on real-world targets flexibly.
 
-2. Include more models, such as 3DSBDD, DecompDiff, VoxMol and LiGAN.
+2. Include more models, such as 3DSBDD, DecompDiff, VoxMol, and LiGAN.
+
+## Contibution
+The codebase is initialized by Haitao Lin, with the [CBGbench v1](https://arxiv.org/html/2406.10840v1) as our motivation; The subsequent running of the code repository will be managed by Guojiang Zhao and his team of [Deep Potential Tech](https://www.dp.tech).
 
 If you find the repository is helpful to your research or projects, please refer to our benchmark paper:
 ```
