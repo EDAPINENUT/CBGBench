@@ -285,7 +285,7 @@ bash bash evaluate.sh --method {method} --task {task} --tag pretrained
 2. Include more models, such as 3DSBDD, DecompDiff, VoxMol, and LiGAN.
 
 ## Contibution
-The codebase is initialized by Haitao Lin, with the [CBGbench v1](https://arxiv.org/html/2406.10840v1) as our motivation; The subsequent running of the code repository will be managed by Guojiang Zhao and his team of [Deep Potential Tech](https://www.dp.tech).
+The codebase is initialized by Haitao Lin, with the [CBGbench v1](https://arxiv.org/html/2406.10840v1) as our motivation; The subsequent running of the code repository will be managed by Guojiang Zhao and his team of [DP Technology](https://www.dp.tech).
 
 If you find the repository is helpful to your research or projects, please refer to our benchmark paper:
 ```
