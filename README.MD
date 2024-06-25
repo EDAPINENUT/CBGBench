@@ -33,6 +33,7 @@ conda install pyg pytorch-scatter pytorch-cluster -c pyg
 # install rdkit, efgs, obabel, etc.
 pip install --use-pep517 EFGs
 pip install biopython
+pip install lxml
 conda install rdkit openbabel tensorboard tqdm pyyaml easydict python-lmdb -c conda-forge
 
 # install plip
@@ -51,6 +52,7 @@ conda install -c conda-forge numpy swig boost-cpp sphinx sphinx_rtd_theme
 python -m pip install git+https://github.com/Valdes-Tresanco-MS/AutoDockTools_py3
 pip install meeko==0.1.dev3 scipy pdb2pqr vina
 
+# If you are unable to install vina, you can try: conda install vina
 # If you encounter the following error:
 # ImportError: libtiff.so.5: cannot open shared object file: No such file or directory
 # Please try the following steps to resolve it:
