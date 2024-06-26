@@ -1,5 +1,5 @@
 name: pl_fa
-raw_path: ../datasets/crossdocked_v1.1_rmsd1.0_pocket10
+raw_path: ./raw_data/crossdocked_v1.1_rmsd1.0_pocket10
 split_path: ./data/split_by_name_10m.pt
 transform:
   - type: featurize_protein_fa
@@ -10,8 +10,6 @@ transform:
   - type: center_pos
     center_flag: protein
   - type: merge
-    keys: 
+    keys:
       - protein
       - ligand
-
-  

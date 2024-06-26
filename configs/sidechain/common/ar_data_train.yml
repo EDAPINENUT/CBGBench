@@ -1,6 +1,6 @@
 name: pl_decomp
 version: sidechain
-raw_path: ../datasets/crossdocked_v1.1_rmsd1.0_pocket10
+raw_path: ./raw_data/crossdocked_v1.1_rmsd1.0_pocket10
 split_path: ./data/split_by_name_10m.pt
 transform:
   - type: choose_ctx_gen
@@ -13,10 +13,10 @@ transform:
 
   - type: mixed_mask
     mask_target: ligand
-  
+
   - type: count_bond_neighbors
     graph_name: ligand_context
-  
+
   - type: build_focal_for_ligand
   - type: sample_edge_for_ligand
     k: 8
@@ -26,7 +26,7 @@ transform:
     noise_std: 0.1
 
   - type: hetero_merge
-    keys: 
+    keys:
       - protein
       - ligand_masked
       - ligand_context
@@ -48,5 +48,3 @@ transform:
       - ctx_bond_type
       - cross_bond_index
       - cross_bond_type
-
-
