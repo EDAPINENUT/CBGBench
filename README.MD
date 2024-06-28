@@ -7,10 +7,10 @@ This is the official code repository of the paper 'CBGBench: Fill in the Blank o
 | Pocket2Mol | https://arxiv.org/abs/2205.07249            | https://github.com/pengxingang/Pocket2Mol |
 | GraphBP    | https://arxiv.org/abs/2204.09410            | https://github.com/divelab/GraphBP        |
 | DiffSBDD   | https://arxiv.org/abs/2210.13695            | https://github.com/arneschneuing/DiffSBDD |
-| DiffBP     | https://arxiv.org/abs/2211.11214            | Here is the offical implementation.       |
+| DiffBP     | https://arxiv.org/abs/2211.11214            | Here is the official implementation.       |
 | TargetDiff | https://arxiv.org/abs/2303.03543            | https://github.com/guanjq/targetdiff      |
 | FLAG       | https://openreview.net/forum?id=Rq13idF0F73 | https://github.com/zaixizhang/FLAG        |
-| D3FG       | https://arxiv.org/abs/2306.13769            | Here is the offical implementation.       |
+| D3FG       | https://arxiv.org/abs/2306.13769            | Here is the official implementation.       |
 
 These models are initially established for `de novo` molecule generation, and we extend more tasks including `linker design`, `fragment growing`, `scaffold hopping`, and `side chain decoration`.
 ![teaser](https://raw.githubusercontent.com/EDAPINENUT/CBGBench/master/scripts/tasks.jpg)
@@ -46,7 +46,7 @@ python setup.py install
 alias plip='python plip/plip/plipcmd.py'
 cd ..
 
-### note that if there is error in setup.py, it can be ignored as long as openbabel is installed.
+### Note that if there is an error in setup.py, it can be ignored as long as openbabel is installed.
 
 # install docking tools
 conda install -c conda-forge numpy swig boost-cpp sphinx sphinx_rtd_theme
@@ -65,7 +65,7 @@ pip install pillow
 
 ### CrossDocked2020
 #### 1. Download processed datasets
-(i) Download the processed dataset from [Google Drive](https://drive.google.com/drive/folders/1wm5_rMbemxqMiTxoBr_V-Vt5NyNtdZT7?usp=share_link) . For each datasets, it is corresponding to different methods and the tasks.  Please refer to the Table below to find the processed data that you need to use. Note that to train D3FG, it is a two stage model that firstly generate functional groups and then generate linker atoms, so that we named the two-stage model as D3FG_fg and D3FG_linker, and the training data is different for them.
+(i) Download the processed dataset from [Google Drive](https://drive.google.com/drive/folders/1wm5_rMbemxqMiTxoBr_V-Vt5NyNtdZT7?usp=share_link). For each dataset, it corresponds to different methods and tasks.  Please refer to the Table below to find the processed data that you need to use. Note that to train D3FG, it is a two-stage model that firstly generates functional groups and then generates linker atoms, so we named the two-stage model 'D3FG_fg' and 'D3FG_linker', and the training data is different for them.
 
 Table: The data file name corresponding to different methods and tasks.
 | model       | task       | file name                                                                 |
@@ -138,7 +138,7 @@ tar -xzvf crossdocked_v1.1_rmsd1.0.tar.gz ./raw_data
 python ./scripts/extract_pockets.py --source raw_data/crossdocked_v1.1_rmsd1.0 --dest raw_data/crossdocked_v1.1_rmsd1.0_pocket10
 ```
 
-(iii) In training, the Dataset will prepare for each tasks. Pls refer to `Training`. 
+(iii) In training, the Dataset will be prepared for each task. Please refer to `Training`. 
 
 ### ADRB1 and DRD3 Targets
  ####  Download processed targets.
@@ -155,7 +155,7 @@ python ./scripts/extract_pockets.py --source raw_data/crossdocked_v1.1_rmsd1.0 -
 ```
 ## Training
 
-#### 1.If you want to train from scratch, you can run the following
+#### 1. If you want to train from scratch, you can run the following
 ```
 python train.py --config ./configs/{task}/train/{method}.yml --logdir ./logs/{task}/{method} 
 ```
@@ -202,7 +202,7 @@ python train.py --config ./configs/denovo/train/d3fg_linker.yml --logdir ./logs/
 
 TODO: Table with pretrained models
 
-Download the pretrained `.pt` checkpoints thatyou need, and copy them into `./logs/`, which will lead to the following directory structure:
+Download the pretrained `.pt` checkpoints that you need, and copy them into `./logs/`, which will lead to the following directory structure:
 ```
 # TODO
 - CBGBench
@@ -237,10 +237,10 @@ Once the model is trained, you can draw samples from them on the test pockets, w
 bash generate.sh --method {method} --task {task} --tag {tag} --checkpoint {ckpt_number}
 ```
 
-In the command, {method} and {task} pair can be found the former Table on method-task pairs. {tag} should be replaced with `selftrain` or `pretrain`, according to the checkpoints you use. 
+In the command, {method} and {task} pair can be found in the former Table on method-task pairs. {tag} should be replaced with `selftrain` or `pretrain`, according to the checkpoints you use. 
 If the --checkpoint parameter is provided without a number, it will automatically find the latest `.pt` file. If a number is provided, it will use the specified checkpoint file.
 
-For example, if you want to generate samples on test set for *de novo* design with *self-trained* *targetdiff* model, you can run: 
+For example, if you want to generate samples on the test set for *de novo* design with *self-trained* *targetdiff* model, you can run: 
 ```
 bash generate.sh --method targetdiff --task denovo --tag selftrain --checkpoint 
 ```
