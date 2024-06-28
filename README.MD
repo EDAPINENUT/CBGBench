@@ -13,6 +13,7 @@ This is the official code repository of the paper 'CBGBench: Fill in the Blank o
 | D3FG       | https://arxiv.org/abs/2306.13769            | Here is the offical implementation.       |
 
 These models are initially established for `de novo` molecule generation, and we extend more tasks including `linker design`, `fragment growing`, `scaffold hopping`, and `side chain decoration`.
+![teaser](https://raw.githubusercontent.com/EDAPINENUT/CBGBench/master/scripts/tasks.jpg)
 
 ## Installation
 #### Create environment with basic packages.
