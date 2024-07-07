@@ -1,7 +1,7 @@
 # CBGBench
 
 ## Introduction
-This is the official code repository of the paper 'CBGBench: Fill in the Blank of Protein-Molecule Binding Graph',  which aims to unify target-aware molecule design with single code implementation. Now here we include 7 methods as shown below:
+This is the official code repository of the paper 'CBGBench: Fill in the Blank of Protein-Molecule Binding Graph',  which aims to unify target-aware molecule design with single code implementation. Util now, we have included 7 methods as shown below:
 | Model      | Paper link                                  | Github                                    |
 |------------|---------------------------------------------|-------------------------------------------|
 | Pocket2Mol | https://arxiv.org/abs/2205.07249            | https://github.com/pengxingang/Pocket2Mol |
