@@ -157,18 +157,18 @@ class D3FG(BaseDiff):
             loss_rot, rot_info = 0, {}
 
         if self.denoise_atom:
-            loss_atom, atom_info = self.type_scheduler.get_loss(c_lig_pred, v_lig_0, v_lig_t, t, 
+            loss_fg, fg_info = self.type_scheduler.get_loss(c_lig_pred, v_lig_0, v_lig_t, t, 
                                                                 gen_flag_lig, batch_idx_lig, 
                                                                 pred_logit=True)
         else:
-            loss_atom, atom_info = 0, {}
+            loss_fg, fg_info = 0, {}
 
         results = {}
         results.update(pos_info)
-        results.update(atom_info)
+        results.update(fg_info)
         results.update(rot_info)
 
-        return {'pos': loss_pos, 'rot': loss_rot,  'atom': loss_atom}, results
+        return {'pos': loss_pos, 'rot': loss_rot,  'fg': loss_fg}, results
 
 
     def sample(self, batch):
