@@ -134,14 +134,14 @@ class DiffSBDD(BaseDiff):
                                                                    gen_flag_lig, batch_idx_lig, 
                                                                    score_in=False, info_tag='pos')
         else:
-            loss_pos, pos_info = 0, {}
+            loss_pos, pos_info = torch.tensor(0).float(), {}
 
         if self.denoise_atom:
             loss_atom, atom_info = self.type_scheduler.get_score_loss(c_lig_pred, type_noise, t, 
                                                                       gen_flag_lig, batch_idx_lig, 
                                                                       score_in=False, info_tag='atom')
         else:
-            loss_atom, atom_info = 0, {}
+            loss_atom, atom_info = torch.tensor(0).float(), {}
 
         results = {}
         results.update(pos_info)

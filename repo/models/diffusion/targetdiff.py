@@ -109,13 +109,13 @@ class TargetDiff(BaseDiff):
                                                              gen_flag_lig, batch_idx_lig, 
                                                              type='denoise')
         else:
-            loss_pos, pos_info = 0, {}
+            loss_pos, pos_info = torch.tensor(0).float(), {}
         if self.denoise_atom:
             loss_atom, atom_info = self.type_scheduler.get_loss(c_lig_pred, v_lig_0, v_lig_t, t, 
                                                                 gen_flag_lig, batch_idx_lig, 
                                                                 pred_logit=True)
         else:
-            loss_atom, atom_info = 0, {}
+            loss_atom, atom_info = torch.tensor(0).float(), {}
 
         results = {}
         results.update(pos_info)
