@@ -40,7 +40,7 @@ train:
     pos: 1.0
     rot: 1.0
     fg: 100.0
-  max_iters: 500000
+  max_iters: 5000000
   report_freq: 100
   batch_size: 4
   seed: 2022
