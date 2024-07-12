@@ -30,7 +30,7 @@ train:
     focus: 1.0
     contact: 1.0
 
-  max_iters: 500000
+  max_iters: 5000000
   report_freq: 100
   batch_size: 16
   seed: 2022
