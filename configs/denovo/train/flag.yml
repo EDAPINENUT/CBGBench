@@ -33,7 +33,7 @@ train:
     torsion: 1.0
     sr: 1.0
 
-  max_iters: 500000
+  max_iters: 5000000
   report_freq: 100
   batch_size: 8
   seed: 2022
