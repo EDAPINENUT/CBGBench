@@ -31,7 +31,7 @@ train:
   loss_weights:
     pos: 1.0
     atom: 1.0
-  max_iters: 5000000
+  max_iters: 50000000
   report_freq: 100
   batch_size: 8
   seed: 2022
