@@ -11,7 +11,7 @@ model:
     atom_schedule: 
       type: polynomial_2
     num_diffusion_timesteps: 1000
-    time_sampler: symmetric
+    time_sampler: random
   embedder:
     emb_dim: 128 #emb_dim should equal to node_feat_dim
     atom:
@@ -49,4 +49,4 @@ train:
     min_lr: 1.e-6
 
 eval:
-  val_freq: 1 # 1000
+  val_freq: 1000 # 1000

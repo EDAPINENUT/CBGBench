@@ -5,10 +5,7 @@ transform:
   - type: featurize_protein_fa
   - type: featurize_ligand_fa
     mode: basic
-  - type: add_pos_noise
-    noise_std: 0.1
-  - type: center_pos
-    center_flag: ligand
+  - type: center_whole_pos
   - type: merge
     keys:
       - protein

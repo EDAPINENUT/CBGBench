@@ -55,8 +55,8 @@ from repo.utils.data import get_collate_fn, recursive_to
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', default='./configs/denovo/train/diffsbdd.yml', type=str)
-    parser.add_argument('--logdir', type=str, default='./logs/denovo/diffsbdd')         
+    parser.add_argument('--config', default='./configs/denovo/train/diffbp.yml', type=str)
+    parser.add_argument('--logdir', type=str, default='./logs/denovo/diffbp')         
     parser.add_argument('--debug', action='store_true', default=False)
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--num_workers', type=int, default=8)

@@ -10,14 +10,11 @@ data:
     transform:
       - type: featurize_protein_fa
       - type: remove_ligand
-      
-      - type: center_pos
-        center_flag: protein
-
+      - type: center_whole_pos
       - type: assign_molsize
         distribution: prior_distcond
       - type: assign_atomtype
-        distribution: gaussian
+        distribution: zeros
         mode: basic
       - type: assign_molpos
         distribution: zero_mean_gaussian
