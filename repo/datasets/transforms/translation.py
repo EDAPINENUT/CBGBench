@@ -24,6 +24,32 @@ class CenterPos(object):
 
         return data
     
+@register_transform('center_whole_pos')
+class CenterPos(object):
+    def __init__(self):
+        pass 
+
+    def __call__(self, data):
+        protein_pos = data['protein'].pos
+        
+        if hasattr(data, 'ligand') and hasattr(data.ligand, 'pos'):
+            ligand_pos = data['ligand'].pos
+            data_center = (ligand_pos.sum(0) + protein_pos.sum(0)) / (len(ligand_pos) + len(protein_pos))
+        else:
+            data_center = protein_pos.mean(0)
+        
+        data_center = data_center.unsqueeze(0)
+        
+        data['protein'].pos = data['protein'].pos - data_center
+        data['protein'].translation = data_center.expand(data['protein'].pos.size(0), -1)
+        
+        if hasattr(data, 'ligand') and hasattr(data.ligand, 'pos'):
+            data['ligand'].pos = data['ligand'].pos - data_center
+            data['ligand'].translation = data_center.expand(data['ligand'].pos.size(0), -1)
+
+        return data
+
+
 @register_transform('center_frame_pos')
 class CenterFramePos(object):
     def __init__(self, center_flag):

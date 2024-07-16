@@ -396,6 +396,8 @@ class AssignMolType(object):
             atom_type = torch.ones(len(atom_type)) * absorbing_state
         elif self.distribution == 'gaussian':
             atom_type =torch.randn(len(atom_type), self.num_types)
+        elif self.distribution == 'zeros':
+            atom_type = torch.zeros(len(atom_type), self.num_types)
         elif self.distribution == 'prior':
             raise ValueError(f'Unknown distribution type: {self.distribution}')
         elif self.distribution == 'posterior':

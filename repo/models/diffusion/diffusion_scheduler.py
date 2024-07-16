@@ -4,7 +4,7 @@ import numpy as np
 from ..utils.register import register_from_numpy
 from ..utils.categorical import *
 from ..utils.continuous import *
-from torch_scatter import scatter_sum, scatter_mean
+from torch_scatter import scatter_add, scatter_mean
 from .schedule_utils import *
 from ..utils.so3 import *
 
@@ -665,3 +665,376 @@ class VariationalScheduler(nn.Module):
         sigma_t_given_s = torch.sqrt(sigma2_t_given_s)
 
         return sigma2_t_given_s, sigma_t_given_s, alpha_t_given_s
+
+
+class DiffsbddVariationalScheduler(VariationalScheduler):
+    def __init__(self, num_timestep, type='polynomial_2') -> None:
+        super().__init__(num_timestep, type)
+
+    def subspace_dimensionality(self, input_size, dim):
+        """Compute the dimensionality on translation-invariant linear subspace
+        where distributions on x are defined."""
+        return (input_size - 1) * dim
+
+    def log_constants_p_x_given_z0(self, n_nodes, device, dim):
+        """Computes p(x|z0)."""
+
+        batch_size = len(n_nodes)
+        degrees_of_freedom_x = self.subspace_dimensionality(n_nodes, dim)
+
+        zeros = torch.zeros((batch_size, 1), device=device)
+        gamma_0 = self.gamma(zeros)
+
+        # Recall that sigma_x = sqrt(sigma_0^2 / alpha_0^2) = SNR(-0.5 gamma_0).
+        log_sigma_x = 0.5 * gamma_0.view(batch_size)
+
+        return degrees_of_freedom_x * (-log_sigma_x - 0.5 * np.log(2 * np.pi))
+
+    def gaussian_KL(self, q_mu_minus_p_mu_squared, q_sigma, p_sigma, d):
+        """Computes the KL distance between two normal distributions.
+            Args:
+                q_mu_minus_p_mu_squared: Squared difference between mean of
+                    distribution q and distribution p: ||mu_q - mu_p||^2
+                q_sigma: Standard deviation of distribution q.
+                p_sigma: Standard deviation of distribution p.
+                d: dimension
+            Returns:
+                The KL distance
+            """
+        return d * torch.log(p_sigma / q_sigma) + \
+               0.5 * (d * q_sigma ** 2 + q_mu_minus_p_mu_squared) / \
+               (p_sigma ** 2) - 0.5 * d
+
+    def remove_mean_batch(self, x_lig, x_rec, batch_idx_lig, batch_idx_rec):
+        mean = scatter_mean(x_lig, batch_idx_lig, dim=0)
+        x_lig = x_lig - mean[batch_idx_lig]
+        x_rec = x_rec - mean[batch_idx_rec]
+        return x_lig, x_rec
+
+    def inflate_batch_array(self, array, target):
+        """
+        Inflates the batch array (array) with only a single axis
+        (i.e. shape = (batch_size,), or possibly more empty axes
+        (i.e. shape (batch_size, 1, ..., 1)) to match the target shape.
+        """
+        target_shape = (array.size(0),) + (1,) * (len(target.size()) - 1)
+        return array.view(target_shape)
+
+    def sigma(self, gamma, target_tensor):
+        """Computes sigma given gamma."""
+        return self.inflate_batch_array(torch.sqrt(torch.sigmoid(gamma)),
+                                        target_tensor)
+
+    def alpha(self, gamma, target_tensor):
+        """Computes alpha given gamma."""
+        return self.inflate_batch_array(torch.sqrt(torch.sigmoid(-gamma)),
+                                        target_tensor)
+
+    def sum_except_batch(self, x, indices):
+        return scatter_add(x.sum(-1), indices, dim=0)
+
+    def SNR(self, gamma):
+        """Computes signal to noise ratio (alpha^2/sigma^2) given gamma."""
+        return torch.exp(-gamma)
+
+    def forward_pos_center_noise(self, x, t, batch_idx, gen_flag, noise=None, zero_center=False):
+        x_lig, x_rec = x
+        batch_idx_lig, batch_idx_rec = batch_idx
+
+        mask_generate = gen_flag
+
+        if noise is None:
+            noise = torch.randn_like(x_lig)
+        if zero_center:
+            com_noise = scatter_mean(noise, batch_idx_lig, dim=0)[batch_idx_lig]
+            pos_noise = noise - scatter_mean(noise, batch_idx_lig, dim=0)[batch_idx_lig]
+
+        gamma_t = self.inflate_batch_array(self.gamma(t), x_lig)
+        alpha_t = self.alpha(gamma_t, x_lig)
+        sigma_t = self.sigma(gamma_t, x_lig)
+
+        x_noisy = alpha_t[batch_idx_lig] * x_lig + sigma_t[batch_idx_lig] * noise
+
+        x_rec = x_rec.detach().clone()
+        x_noisy, x_rec = self.remove_mean_batch(x_noisy, x_rec, batch_idx_lig, batch_idx_rec)
+
+        if zero_center:
+            return torch.where(mask_generate.unsqueeze(-1), x_noisy, x[0]), pos_noise, com_noise, x_rec
+        
+        return torch.where(mask_generate.unsqueeze(-1), x_noisy, x[0]), noise, x_rec
+    
+    def forward_type_add_noise(self, x, t, batch_idx, gen_flag, noise=None, zero_center=False):
+        mask_generate = gen_flag
+        gamma_t = self.inflate_batch_array(self.gamma(t), x)
+
+        if noise is None:
+            noise = torch.randn_like(x)
+        if zero_center:
+            com_noise = scatter_mean(noise, batch_idx, dim=0)[batch_idx]
+            pos_noise = noise - scatter_mean(noise, batch_idx, dim=0)[batch_idx]
+        
+        alpha_t = self.alpha(gamma_t, x)
+        sigma_t = self.sigma(gamma_t, x)
+
+        x_noisy = alpha_t[batch_idx] * x + sigma_t[batch_idx] * noise
+        
+        if zero_center:
+            return torch.where(mask_generate.unsqueeze(-1), x_noisy, x), pos_noise, com_noise
+        
+        return torch.where(mask_generate.unsqueeze(-1), x_noisy, x), noise
+        
+    def kl_prior(self, x, batch_idx, dimensions):
+        num_nodes = torch.bincount(batch_idx)
+        batch_size = len(num_nodes)
+
+        ones = torch.ones((batch_size, 1), device=x.device)
+        gamma_T = self.gamma(ones)
+        alpha_T = self.alpha(gamma_T, x)
+
+        mu_T_x = alpha_T[batch_idx] * x
+        sigma_T = self.sigma(gamma_T, mu_T_x).squeeze()
+
+        zeros = torch.zeros_like(mu_T_x)
+        ones = torch.ones_like(sigma_T)
+        mu_norm2 = self.sum_except_batch((mu_T_x - zeros) ** 2, batch_idx)
+        kl_distance = self.gaussian_KL(mu_norm2, sigma_T, ones, dimensions)
+
+        return kl_distance
+    
+    def cdf_standard_gaussian(self, x):
+        return 0.5 * (1. + torch.erf(x / math.sqrt(2)))
+
+    def log_px_given_z0_continuous(self, eps_lig_x, net_lig_x, batch_idx_lig):
+        # Computes the error for the distribution
+        squared_error = (eps_lig_x - net_lig_x) ** 2
+
+        log_p_x_given_z0_without_constants_ligand = -0.5 * (
+            self.sum_except_batch(squared_error, batch_idx_lig)
+        )
+        return log_p_x_given_z0_without_constants_ligand
+
+    def log_ph_given_z0_discrete(self, c_lig_0,  z_h_lig, gamma_t, batch_idx_lig, epsilon=1e-10):
+        # Compute sigma_0 and rescale to the integer scale of the data.
+
+        norm_values = [1, 4]
+        norm_biases = (None, 0.0)
+
+        sigma_0_cat = self.sigma(gamma_t, target_tensor=z_h_lig) * norm_values[1]
+        
+        # Compute delta indicator masks and un-normalize
+        ligand_onehot = c_lig_0 * norm_values[1] + norm_biases[1]
+        estimated_ligand_onehot = z_h_lig * norm_values[1] + norm_biases[1]
+        centered_ligand_onehot = estimated_ligand_onehot - 1
+
+        # Compute integrals from 0.5 to 1.5 of the normal distribution
+        log_ph_cat_proportional_ligand = torch.log(
+            self.cdf_standard_gaussian((centered_ligand_onehot + 0.5) / sigma_0_cat[batch_idx_lig])
+            - self.cdf_standard_gaussian((centered_ligand_onehot - 0.5) / sigma_0_cat[batch_idx_lig])
+            + epsilon
+        )
+
+        # Normalize the distribution over the categories.
+        log_Z = torch.logsumexp(log_ph_cat_proportional_ligand, dim=1, keepdim=True)
+        log_probabilities_ligand = log_ph_cat_proportional_ligand - log_Z
+
+        # Select the log_prob of the current category using the onehot representation.
+        log_ph_given_z0_ligand = self.sum_except_batch(
+            log_probabilities_ligand * ligand_onehot, batch_idx_lig
+        )
+        return log_ph_given_z0_ligand
+
+    def calculate_kl_prior(self, x, batch_idx, dimensions):
+        return self.kl_prior(x, batch_idx, dimensions)
+
+    def error_t(self, pred, tgt, batch_idx):
+        squared_error = (tgt - pred) ** 2
+        return self.sum_except_batch(squared_error, batch_idx)
+
+    def calculate_loss_t_training(self, pred, tgt, batch_idx, t_is_not_zero):
+        error_t = self.error_t(pred, tgt, batch_idx)
+        error_t *= t_is_not_zero.squeeze()
+        denom_lig = (torch.bincount(batch_idx) * pred.size(-1))
+        error_t /= denom_lig
+        loss_t = 0.5 * error_t
+        return loss_t
+
+    def calculate_loss_t_non_training(self, pred, tgt, gamma_s, gamma_t, batch_idx):
+        error_t = self.error_t(pred, tgt, batch_idx)
+        SNR_weight = (1 - self.SNR(gamma_s - gamma_t)).squeeze(1)
+        loss_t = -self.num_timestep * 0.5 * SNR_weight * error_t
+        return loss_t
+
+    def calculate_loss_0_training(self, tgt, pred, batch_idx, c_lig_0, c_lig_t, gamma_t, compute_continus, compute_discrete, t_is_zero):
+        if compute_continus:
+            loss_0 = self.log_px_given_z0_continuous(tgt, pred, batch_idx)
+        if compute_discrete:
+            loss_0 = self.log_ph_given_z0_discrete(c_lig_0, c_lig_t, gamma_t, batch_idx)
+        loss_0 = -loss_0 * t_is_zero.squeeze()
+        return loss_0
+
+    def calculate_loss_0_non_training(self, tgt, pred, batch_idx, c_lig_0, c_lig_t, gamma_t, compute_continus, compute_discrete):
+        if compute_continus:
+            loss_0 = self.log_px_given_z0_continuous(tgt, pred, batch_idx)
+        if compute_discrete:
+            loss_0 = self.log_ph_given_z0_discrete(c_lig_0, c_lig_t, gamma_t, batch_idx)
+        loss_0 = -loss_0
+        neg_log_constants = -self.log_constants_p_x_given_z0(
+            n_nodes=torch.bincount(batch_idx), device=tgt.device, dim=tgt.size(-1))
+        loss_0 += neg_log_constants
+        return loss_0
+
+    def get_score_loss_training(self, pred, tgt, t, gen_flag, batch_idx, score_in=False, info_tag=None, s=None, x_lig_0=None, c_lig_0=None, c_lig_t=None, compute_continus=False, compute_discrete=False, t_is_zero=None, t_is_not_zero=None):
+
+        loss_t = self.calculate_loss_t_training(pred, tgt, batch_idx, t_is_not_zero)
+
+        gamma_t = self.inflate_batch_array(self.gamma(t), tgt)
+
+        loss_0 = self.calculate_loss_0_training(tgt, pred, batch_idx, c_lig_0, c_lig_t, gamma_t, compute_continus, compute_discrete, t_is_zero)
+
+        if x_lig_0 is not None:
+            kl_prior = self.calculate_kl_prior(x_lig_0, batch_idx, dimensions=self.subspace_dimensionality(torch.bincount(batch_idx), dim=3))
+        if c_lig_0 is not None:
+            kl_prior = self.calculate_kl_prior(c_lig_0, batch_idx, dimensions=1)
+
+        loss = loss_t + loss_0 + kl_prior
+        return loss
+    
+    def get_score_loss_not_training(self, pred, tgt, t, gen_flag, batch_idx, score_in=False, info_tag=None, s=None, x_lig_0=None, c_lig_0=None, c_lig_t=None, compute_continus=False, compute_discrete=False, x_pred_t_non_training=None, x_tgt_t_non_training=None, c_pred_t_non_training=None, c_tgt_t_non_training=None):
+
+        gamma_s = self.inflate_batch_array(self.gamma(s), tgt)
+        gamma_t = self.inflate_batch_array(self.gamma(t), tgt)
+        loss_t = self.calculate_loss_t_non_training(pred, tgt, gamma_s, gamma_t, batch_idx)
+
+        if x_lig_0 is not None:
+            kl_prior = self.calculate_kl_prior(x_lig_0, batch_idx, dimensions=self.subspace_dimensionality(torch.bincount(batch_idx), dim=3))
+        if c_lig_0 is not None:
+            kl_prior = self.calculate_kl_prior(c_lig_0, batch_idx, dimensions=1)
+
+        t_zeros = torch.zeros_like(s)
+        gamma_0 = self.inflate_batch_array(self.gamma(t_zeros), tgt)
+
+        if x_pred_t_non_training is not None and x_tgt_t_non_training is not None:
+            pred = x_pred_t_non_training
+            tgt = x_tgt_t_non_training
+
+        if c_pred_t_non_training is not None and c_tgt_t_non_training is not None:
+            pred = c_pred_t_non_training
+            tgt = c_tgt_t_non_training
+
+        loss_0 = self.calculate_loss_0_non_training(tgt, pred, batch_idx, c_lig_0, c_lig_t, gamma_0, compute_continus, compute_discrete)
+
+        loss = loss_t + loss_0 + kl_prior
+        return loss
+
+
+    def get_score_loss(self, pred, tgt, t, gen_flag, batch_idx, score_in=False, info_tag=None, s=None, x_lig_0=None, c_lig_0=None, c_lig_t=None, compute_continus=False, compute_discrete=False, t_is_zero=None, t_is_not_zero=None, x_pred_t_non_training=None, x_tgt_t_non_training=None, c_pred_t_non_training=None, c_tgt_t_non_training=None):
+
+        gamma_t = self.inflate_batch_array(self.gamma(t), tgt)
+        sigma_t = self.sigma(gamma_t, tgt)[batch_idx]
+
+        if self.training:
+            loss = self.get_score_loss_training(pred, tgt, t, gen_flag, batch_idx, score_in, info_tag, s, x_lig_0, c_lig_0, c_lig_t, compute_continus, compute_discrete, t_is_zero=t_is_zero, t_is_not_zero=t_is_not_zero)
+
+            if score_in:
+                noise = tgt / sigma_t
+            else:
+                noise = tgt
+
+            pos_info = {'eps_0': noise, 'eps_pred': pred, 'score_0': noise * sigma_t, 'score_pred': pred * sigma_t, 'mask_gen': gen_flag}
+
+            if info_tag is not None:
+                pos_info = {k + '_{}'.format(info_tag):v for k,v in pos_info.items()}        
+
+            return loss.mean(), pos_info
+        
+        else:
+            loss = self.get_score_loss_not_training(pred, tgt, t, gen_flag, batch_idx, score_in, info_tag, s, x_lig_0, c_lig_0, c_lig_t, compute_continus, compute_discrete, x_pred_t_non_training=x_pred_t_non_training, x_tgt_t_non_training=x_tgt_t_non_training, c_pred_t_non_training=c_pred_t_non_training, c_tgt_t_non_training=c_tgt_t_non_training)
+
+            if score_in:
+                noise = tgt / sigma_t
+            else:
+                noise = tgt
+
+            pos_info = {'eps_0': noise, 'eps_pred': pred, 'score_0': noise * sigma_t, 'score_pred': pred * sigma_t, 'mask_gen': gen_flag}
+
+            if info_tag is not None:
+                pos_info = {k + '_{}'.format(info_tag):v for k,v in pos_info.items()}        
+
+            return loss.mean(), pos_info
+
+    def assert_mean_zero_with_mask(self, x, node_mask, eps=1e-10):
+        largest_value = x.abs().max().item()
+        error = scatter_add(x, node_mask, dim=0).abs().max().item()
+        rel_error = error / (largest_value + eps)
+        assert rel_error < 1e-2, f'Mean is not zero, relative_error {rel_error}'
+
+
+    def sample_normal_zero_com(self, mu_lig, xh0_pocket, sigma, lig_mask,
+                               pocket_mask, com=False):
+        eps_lig = torch.randn((len(lig_mask), mu_lig.size(1)), device=lig_mask.device)
+        out_lig = mu_lig + sigma[lig_mask] * eps_lig
+        # project to COM-free subspace
+        if com:
+            xh_pocket = xh0_pocket.detach().clone()
+            out_lig, xh_pocket = \
+                self.remove_mean_batch(out_lig,
+                                    xh0_pocket,
+                                    lig_mask, pocket_mask)
+            return out_lig, xh_pocket
+        else:
+            return out_lig
+
+    def sigma_and_alpha_t_given_s(self, gamma_t,
+                                  gamma_s,
+                                  target_tensor):
+        """
+        Computes sigma t given s, using gamma_t and gamma_s. Used during sampling.
+        These are defined as:
+            alpha t given s = alpha t / alpha s,
+            sigma t given s = sqrt(1 - (alpha t given s) ^2 ).
+        """
+        sigma2_t_given_s = self.inflate_batch_array(
+            -torch.expm1(F.softplus(gamma_s) - F.softplus(gamma_t)), target_tensor
+        )
+
+        log_alpha2_t = F.logsigmoid(-gamma_t)
+        log_alpha2_s = F.logsigmoid(-gamma_s)
+        log_alpha2_t_given_s = log_alpha2_t - log_alpha2_s
+
+        alpha_t_given_s = torch.exp(0.5 * log_alpha2_t_given_s)
+        alpha_t_given_s = self.inflate_batch_array(
+            alpha_t_given_s, target_tensor)
+
+        sigma_t_given_s = torch.sqrt(sigma2_t_given_s)
+
+        return sigma2_t_given_s, sigma_t_given_s, alpha_t_given_s
+    
+    def sample_p_zs_given_zt(self, s, t, zt_lig, xh0_pocket, ligand_mask,
+                             pocket_mask, eps_t_lig, com=False):
+        """Samples from zs ~ p(zs | zt). Only used during sampling."""
+        gamma_s = self.gamma(s)
+        gamma_t = self.gamma(t)
+
+        sigma2_t_given_s, sigma_t_given_s, alpha_t_given_s = \
+            self.sigma_and_alpha_t_given_s(gamma_t, gamma_s, zt_lig)
+
+        sigma_s = self.sigma(gamma_s, target_tensor=zt_lig)
+        sigma_t = self.sigma(gamma_t, target_tensor=zt_lig)
+
+        mu_lig = zt_lig / alpha_t_given_s[ligand_mask] - \
+                 (sigma2_t_given_s / alpha_t_given_s / sigma_t)[ligand_mask] * \
+                 eps_t_lig
+
+        # Compute sigma for p(zs | zt).
+        sigma = sigma_t_given_s * sigma_s / sigma_t
+
+        # Sample zs given the parameters derived from zt.
+        if com:
+            zs_lig, xh0_pocket = self.sample_normal_zero_com(
+                mu_lig, xh0_pocket, sigma, ligand_mask, pocket_mask, com=com)
+            self.assert_mean_zero_with_mask(zt_lig, ligand_mask)
+            return zs_lig, xh0_pocket
+        else:
+            zs_lig = self.sample_normal_zero_com(
+                mu_lig, xh0_pocket, sigma, ligand_mask, pocket_mask, com=com)
+            return zs_lig, xh0_pocket

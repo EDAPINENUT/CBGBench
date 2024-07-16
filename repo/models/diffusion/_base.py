@@ -26,4 +26,9 @@ class BaseDiff(nn.Module):
             if ctn:
                 time = time / self.num_diffusion_timesteps
 
+        elif self.time_sampler == 'random':
+            lowest_t = 0
+            time = torch.randint(
+                lowest_t, self.num_diffusion_timesteps + 1, size=(batch_size,), device=device).float()
+
         return time.to(device)
