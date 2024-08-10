@@ -74,11 +74,11 @@ if __name__ == '__main__':
     torch.save(gen_dict, os.path.join(result_path, 'interact_gen_results.pt'))
     torch.save(ref_dict, os.path.join(result_path, 'interact_ref_results.pt'))
 
-    jsd = sci_spatial.distance.jensenshannon([v for _, v in ref_dict['dist'].items()], 
-                                             [v for _, v in gen_dict['dist'].items()]) # 100 jsd - > mean
-    mae = np.abs([v for _, v in ref_dict['ratio'].items()] - [v for _, v in gen_dict['ratio'].items()]).mean()
+    # jsd = sci_spatial.distance.jensenshannon([v for _, v in ref_dict['dist'].items()], 
+    #                                          [v for _, v in gen_dict['dist'].items()]) # 100 jsd - > mean
+    # mae = np.abs([v for _, v in ref_dict['ratio'].items()] - [v for _, v in gen_dict['ratio'].items()]).mean()
 
-    print('jsd: ', jsd, 'mae: ', mae)
+    # print('jsd: ', jsd, 'mae: ', mae)
 
     # num_success = 0
     # jsds = []
