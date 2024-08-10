@@ -38,7 +38,7 @@ if __name__ == '__main__':
             fg_type = eval_fg_type.get_func_group_from_mol(mol)
             success_fg_types += Counter(fg_type)
 
-            atom_type = eval_atom_type.get_atomic_num_from_mol(mol)
+            atom_type = eval_atom_type.get_atom_from_mol_num(mol)
             success_atom_types += Counter(atom_type)
 
             ring_type = eval_ring_type.ring_type_from_mol(mol)
