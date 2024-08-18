@@ -192,13 +192,13 @@ python train.py --config ./configs/{task}/train/{method}.yml --logdir ./logs/{ta
 | DiffBP     | side chain decoration | diffbp + sidechain                      |
 | TargetDiff | side chain decoration | targetdiff + sidechain                  |
 
-Note that D3FG and FLAG are not compatible with the extended tasks, and D3FG utilizes 2-stage-training strategies, so that if you want to train D3FG yourself, you need to run:
+Note that D3FG and FLAG are not compatible with the extended tasks, and D3FG utilizes 2-stage-training strategies, so if you want to train D3FG yourself, you need to run:
 ```
 python train.py --config ./configs/denovo/train/d3fg_fg.yml --logdir ./logs/denovo/d3fg_fg 
 python train.py --config ./configs/denovo/train/d3fg_linker.yml --logdir ./logs/denovo/d3fg_linker 
 ```
 
-#### 2. Also, you can use our pretrained ones from Google Drives [], the corresponding pretrained data file names to differet tasks and models are provided in the table below:
+#### 2. Also, you can use our pretrained ones from Google Drives [], the corresponding pretrained data file names to different tasks and models are provided in the table below:
 
 TODO: Table with pretrained models
 
@@ -244,12 +244,12 @@ For example, if you want to generate samples on the test set for *de novo* desig
 ```
 bash generate.sh --method targetdiff --task denovo --tag selftrain --checkpoint 
 ```
-Or you want to test the checkpoint of the 100000-th.
+Or if you want to test the checkpoint of the 100000-th.
 ```
 bash generate.sh --method targetdiff --task denovo --tag selftrain --checkpoint 100000
 ```
 
-Note that `D3FG` uses two-step generation strategy, so the command should be
+Note that `D3FG` uses a two-step generation strategy, so the command should be
 ```
 bash generate.sh --method d3fg_fg --task denovo --tag {tag} --checkpoint  # generate the functional groups
 bash generate.sh --method d3fg_linker --task denovo --tag {tag} --checkpoint # generate the linkers
@@ -285,7 +285,7 @@ bash bash evaluate.sh --method {method} --task {task} --tag pretrained
 
 2. Include more models, such as 3DSBDD, DecompDiff, VoxMol, and LiGAN.
 
-## Contibution
+## Contribution
 The codebase is initialized by Haitao Lin, with the [CBGbench v1](https://arxiv.org/html/2406.10840v1) as our motivation; The subsequent running of the code repository will be managed by Guojiang Zhao and his team of [DP Technology](https://www.dp.tech).
 
 If you find the repository is helpful to your research or projects, please refer to our benchmark paper:
