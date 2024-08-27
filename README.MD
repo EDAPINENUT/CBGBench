@@ -1,7 +1,9 @@
 # CBGBench
 
-![CBGBench Logo](docs/logo.jpeg)
-
+<p align="center">
+    <img src="docs/logo.jpeg" width="500" class="center" alt="CBGBench Logo"/>
+    <br/>
+</p>
 ---
 
 ## Introduction
