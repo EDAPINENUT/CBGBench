@@ -4,7 +4,7 @@
     <br/>
 </p>
 
-* CBGBench: Complex Binding Graph Benchmark * is a benchmark for generative target-aware molecule design.
+*CBGBench: Complex Binding Graph Benchmark* is a benchmark for generative target-aware molecule design.
 -----
 ## Introduction
 
