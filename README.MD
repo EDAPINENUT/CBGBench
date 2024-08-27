@@ -1,6 +1,6 @@
 
 <p align="center">
-    <img src="docs/cbg_logo.png" width="500" class="center" alt="CBGBench Logo"/>
+    <img src="docs/cbg_logo.png" width="400" class="center" alt="CBGBench Logo"/>
     <br/>
 </p>
 
