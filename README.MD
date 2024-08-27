@@ -1,22 +1,29 @@
 # CBGBench
 
+![CBGBench Logo](docs/logo.jpeg)
+
+---
+
 ## Introduction
-This is the official code repository of the paper 'CBGBench: Fill in the Blank of Protein-Molecule Binding Graph',  which aims to unify target-aware molecule design with single code implementation. Until now, we have included 7 methods as shown below:
-| Model      | Paper link                                  | Github                                    |
+
+This is the official code repository of the paper 'CBGBench: Fill in the Blank of Protein-Molecule Binding Graph', which aims to unify target-aware molecule design with single code implementation. Until now, we have included 7 methods as shown below:
+| Model | Paper link | Github |
 |------------|---------------------------------------------|-------------------------------------------|
-| Pocket2Mol | https://arxiv.org/abs/2205.07249            | https://github.com/pengxingang/Pocket2Mol |
-| GraphBP    | https://arxiv.org/abs/2204.09410            | https://github.com/divelab/GraphBP        |
-| DiffSBDD   | https://arxiv.org/abs/2210.13695            | https://github.com/arneschneuing/DiffSBDD |
-| DiffBP     | https://arxiv.org/abs/2211.11214            | Here is the official implementation.       |
-| TargetDiff | https://arxiv.org/abs/2303.03543            | https://github.com/guanjq/targetdiff      |
-| FLAG       | https://openreview.net/forum?id=Rq13idF0F73 | https://github.com/zaixizhang/FLAG        |
-| D3FG       | https://arxiv.org/abs/2306.13769            | Here is the official implementation.       |
+| Pocket2Mol | https://arxiv.org/abs/2205.07249 | https://github.com/pengxingang/Pocket2Mol |
+| GraphBP | https://arxiv.org/abs/2204.09410 | https://github.com/divelab/GraphBP |
+| DiffSBDD | https://arxiv.org/abs/2210.13695 | https://github.com/arneschneuing/DiffSBDD |
+| DiffBP | https://arxiv.org/abs/2211.11214 | Here is the official implementation. |
+| TargetDiff | https://arxiv.org/abs/2303.03543 | https://github.com/guanjq/targetdiff |
+| FLAG | https://openreview.net/forum?id=Rq13idF0F73 | https://github.com/zaixizhang/FLAG |
+| D3FG | https://arxiv.org/abs/2306.13769 | Here is the official implementation. |
 
 These models are initially established for `de novo` molecule generation, and we extend more tasks including `linker design`, `fragment growing`, `scaffold hopping`, and `side chain decoration`.
 ![teaser](https://raw.githubusercontent.com/EDAPINENUT/CBGBench/master/scripts/tasks.jpg)
 
 ## Installation
+
 #### Create environment with basic packages.
+
 ```
 conda env create -f environment.yml
 conda activate cbgbench
@@ -30,6 +37,7 @@ conda install pyg pytorch-scatter pytorch-cluster -c pyg
 ```
 
 #### Install tools for chemistry
+
 ```
 # install rdkit, efgs, obabel, etc.
 pip install --use-pep517 EFGs
@@ -64,40 +72,42 @@ pip install pillow
 ## Prepare Dataset
 
 ### CrossDocked2020
+
 #### 1. Download processed datasets
-(i) Download the processed dataset from [Google Drive](https://drive.google.com/drive/folders/1wm5_rMbemxqMiTxoBr_V-Vt5NyNtdZT7?usp=share_link). For each dataset, it corresponds to different methods and tasks.  Please refer to the Table below to find the processed data that you need to use. Note that to train D3FG, it is a two-stage model that firstly generates functional groups and then generates linker atoms, so we named the two-stage model 'D3FG_fg' and 'D3FG_linker', and the training data is different for them.
+
+(i) Download the processed dataset from [Google Drive](https://drive.google.com/drive/folders/1wm5_rMbemxqMiTxoBr_V-Vt5NyNtdZT7?usp=share_link). For each dataset, it corresponds to different methods and tasks. Please refer to the Table below to find the processed data that you need to use. Note that to train D3FG, it is a two-stage model that firstly generates functional groups and then generates linker atoms, so we named the two-stage model 'D3FG_fg' and 'D3FG_linker', and the training data is different for them.
 
 Table: The data file name corresponding to different methods and tasks.
-| model       | task       | file name                                                                 |
+| model | task | file name |
 |-------------|------------|---------------------------------------------------------------------------|
-| Pocket2Mol  | de novo    | data/pl/crossdocked_v1.1_rmsd1.0_pocket10_processed_fullatom.lmdb         |
-| GraphBP     | de novo    | data/pl/crossdocked_v1.1_rmsd1.0_pocket10_processed_fullatom.lmdb         |
-| DiffSBDD    | de novo    | data/pl/crossdocked_v1.1_rmsd1.0_pocket10_processed_fullatom.lmdb         |
-| DiffBP      | de novo    | data/pl/crossdocked_v1.1_rmsd1.0_pocket10_processed_fullatom.lmdb         |
-| TargetDiff  | de novo    | data/pl/crossdocked_v1.1_rmsd1.0_pocket10_processed_fullatom.lmdb         |
-| FLAG        | de novo    | data/pl_arfg/crossdocked_v1.1_rmsd1.0_pocket10_processed_arfuncgroup.lmdb |
-| D3FG_fg     | de novo    | data/pl_fg/crossdocked_v1.1_rmsd1.0_pocket10_processed_funcgroup.lmdb     |
-| D3FG_linker | de novo    | data/pl/crossdocked_v1.1_rmsd1.0_pocket10_processed_linker.lmdb           |
-| Pocket2Mol  | fragment   | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_frag.lmdb      |
-| GraphBP     | fragment   | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_frag.lmdb      |
-| DiffSBDD    | fragment   | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_frag.lmdb      |
-| DiffBP      | fragment   | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_frag.lmdb      |
-| TargetDiff  | fragment   | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_frag.lmdb      |
-| Pocket2Mol  | linker     | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_linker.lmdb    |
-| GraphBP     | linker     | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_linker.lmdb    |
-| DiffSBDD    | linker     | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_linker.lmdb    |
-| DiffBP      | linker     | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_linker.lmdb    |
-| TargetDiff  | linker     | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_linker.lmdb    |
-| Pocket2Mol  | scaffold   | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_scaffold.lmdb  |
-| GraphBP     | scaffold   | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_scaffold.lmdb  |
-| DiffSBDD    | scaffold   | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_scaffold.lmdb  |
-| DiffBP      | scaffold   | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_scaffold.lmdb  |
-| TargetDiff  | scaffold   | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_scaffold.lmdb  |
-| Pocket2Mol  | side chain | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_sidechain.lmdb |
-| GraphBP     | side chain | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_sidechain.lmdb |
-| DiffSBDD    | side chain | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_sidechain.lmdb |
-| DiffBP      | side chain | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_sidechain.lmdb |
-| TargetDiff  | side chain | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_sidechain.lmdb |
+| Pocket2Mol | de novo | data/pl/crossdocked_v1.1_rmsd1.0_pocket10_processed_fullatom.lmdb |
+| GraphBP | de novo | data/pl/crossdocked_v1.1_rmsd1.0_pocket10_processed_fullatom.lmdb |
+| DiffSBDD | de novo | data/pl/crossdocked_v1.1_rmsd1.0_pocket10_processed_fullatom.lmdb |
+| DiffBP | de novo | data/pl/crossdocked_v1.1_rmsd1.0_pocket10_processed_fullatom.lmdb |
+| TargetDiff | de novo | data/pl/crossdocked_v1.1_rmsd1.0_pocket10_processed_fullatom.lmdb |
+| FLAG | de novo | data/pl_arfg/crossdocked_v1.1_rmsd1.0_pocket10_processed_arfuncgroup.lmdb |
+| D3FG_fg | de novo | data/pl_fg/crossdocked_v1.1_rmsd1.0_pocket10_processed_funcgroup.lmdb |
+| D3FG_linker | de novo | data/pl/crossdocked_v1.1_rmsd1.0_pocket10_processed_linker.lmdb |
+| Pocket2Mol | fragment | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_frag.lmdb |
+| GraphBP | fragment | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_frag.lmdb |
+| DiffSBDD | fragment | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_frag.lmdb |
+| DiffBP | fragment | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_frag.lmdb |
+| TargetDiff | fragment | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_frag.lmdb |
+| Pocket2Mol | linker | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_linker.lmdb |
+| GraphBP | linker | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_linker.lmdb |
+| DiffSBDD | linker | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_linker.lmdb |
+| DiffBP | linker | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_linker.lmdb |
+| TargetDiff | linker | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_linker.lmdb |
+| Pocket2Mol | scaffold | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_scaffold.lmdb |
+| GraphBP | scaffold | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_scaffold.lmdb |
+| DiffSBDD | scaffold | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_scaffold.lmdb |
+| DiffBP | scaffold | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_scaffold.lmdb |
+| TargetDiff | scaffold | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_scaffold.lmdb |
+| Pocket2Mol | side chain | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_sidechain.lmdb |
+| GraphBP | side chain | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_sidechain.lmdb |
+| DiffSBDD | side chain | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_sidechain.lmdb |
+| DiffBP | side chain | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_sidechain.lmdb |
+| TargetDiff | side chain | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_sidechain.lmdb |
 
 (ii) Copy the datasets to `./data` dir, in which the complete data file directory will look like
 
@@ -128,21 +138,26 @@ Table: The data file name corresponding to different methods and tasks.
 #### 2. Download raw data and prepare from scratch
 
 (i) Download `crossdocked_v1.1_rmsd1.0.tar.gz` from [TargetDiff Drive](https://drive.google.com/drive/folders/1j21cc7-97TedKh_El5E34yI8o5ckI7eK), and copy it to `./raw_data/` with
+
 ```
 mkdir raw_data
 tar -xzvf crossdocked_v1.1_rmsd1.0.tar.gz ./raw_data
 ```
 
 (ii) Run the following:
+
 ```
 python ./scripts/extract_pockets.py --source raw_data/crossdocked_v1.1_rmsd1.0 --dest raw_data/crossdocked_v1.1_rmsd1.0_pocket10
 ```
 
-(iii) In training, the Dataset will be prepared for each task. Please refer to `Training`. 
+(iii) In training, the Dataset will be prepared for each task. Please refer to `Training`.
 
 ### ADRB1 and DRD3 Targets
- ####  Download processed targets.
- Also, you can download the processes targets file `case_study` from [Google Drive](https://drive.google.com/drive/folders/1YulDlChalaIjqRJjCyOFSY1-KoZ-hYCP?usp=share_link), and copy it to the `./data` directory, which will lead the dir to
+
+#### Download processed targets.
+
+Also, you can download the processes targets file `case_study` from [Google Drive](https://drive.google.com/drive/folders/1YulDlChalaIjqRJjCyOFSY1-KoZ-hYCP?usp=share_link), and copy it to the `./data` directory, which will lead the dir to
+
 ```
 - CGBBench
     - data
@@ -153,49 +168,53 @@ python ./scripts/extract_pockets.py --source raw_data/crossdocked_v1.1_rmsd1.0 -
                 - case_study_name2id.pt
                 ...
 ```
+
 ## Training
 
 #### 1. If you want to train from scratch, you can run the following
-```
-python train.py --config ./configs/{task}/train/{method}.yml --logdir ./logs/{task}/{method} 
-```
- {task} can be replaced with `denovo`, `linker`, `frag`, `scaffold` and `sidechain`, and {method} can be replaced with the model name. The following table gives the detailed method-task pairs and the replacement.
 
- Table: method-task pairs used to train from scratch.
-| Method     | Task                  | {method} + {task}                       |
+```
+python train.py --config ./configs/{task}/train/{method}.yml --logdir ./logs/{task}/{method}
+```
+
+{task} can be replaced with `denovo`, `linker`, `frag`, `scaffold` and `sidechain`, and {method} can be replaced with the model name. The following table gives the detailed method-task pairs and the replacement.
+
+Table: method-task pairs used to train from scratch.
+| Method | Task | {method} + {task} |
 |------------|-----------------------|-----------------------------------------|
-| Pocket2Mol | de novo               | pocket2mol + denovo                     |
-| GraphBP    | de novo               | graphbp + denovo                        |
-| DiffSBDD   | de novo               | diffsbdd + denovo                       |
-| DiffBP     | de novo               | diffbp + denovo                         |
-| TargetDiff | de novo               | targetdiff + denovo                     |
-| FLAG       | de novo               | flag + denovo                           |
-| D3FG       | de novo               | d3fg_fg + denovo ; d3fg_linker + denovo |
-| Pocket2Mol | linker design         | pocket2mol + linker                     |
-| GraphBP    | linker design         | graphbp + linker                        |
-| DiffSBDD   | linker design         | diffsbdd + linker                       |
-| DiffBP     | linker design         | diffbp + linker                         |
-| TargetDiff | linker design         | targetdiff + linker                     |
-| Pocket2Mol | fragment growing      | pocket2mol + frag                       |
-| GraphBP    | fragment growing      | graphbp + frag                          |
-| DiffSBDD   | fragment growing      | diffsbdd + frag                         |
-| DiffBP     | fragment growing      | diffbp + frag                           |
-| TargetDiff | fragment growing      | targetdiff + frag                       |
-| Pocket2Mol | scaffold hopping      | pocket2mol + scaffold                   |
-| GraphBP    | scaffold hopping      | graphbp + scaffold                      |
-| DiffSBDD   | scaffold hopping      | diffsbdd + scaffold                     |
-| DiffBP     | scaffold hopping      | diffbp + scaffold                       |
-| TargetDiff | scaffold hopping      | targetdiff + scaffold                   |
-| Pocket2Mol | side chain decoration | pocket2mol + sidechain                  |
-| GraphBP    | side chain decoration | graphbp + sidechain                     |
-| DiffSBDD   | side chain decoration | diffsbdd + sidechain                    |
-| DiffBP     | side chain decoration | diffbp + sidechain                      |
-| TargetDiff | side chain decoration | targetdiff + sidechain                  |
+| Pocket2Mol | de novo | pocket2mol + denovo |
+| GraphBP | de novo | graphbp + denovo |
+| DiffSBDD | de novo | diffsbdd + denovo |
+| DiffBP | de novo | diffbp + denovo |
+| TargetDiff | de novo | targetdiff + denovo |
+| FLAG | de novo | flag + denovo |
+| D3FG | de novo | d3fg_fg + denovo ; d3fg_linker + denovo |
+| Pocket2Mol | linker design | pocket2mol + linker |
+| GraphBP | linker design | graphbp + linker |
+| DiffSBDD | linker design | diffsbdd + linker |
+| DiffBP | linker design | diffbp + linker |
+| TargetDiff | linker design | targetdiff + linker |
+| Pocket2Mol | fragment growing | pocket2mol + frag |
+| GraphBP | fragment growing | graphbp + frag |
+| DiffSBDD | fragment growing | diffsbdd + frag |
+| DiffBP | fragment growing | diffbp + frag |
+| TargetDiff | fragment growing | targetdiff + frag |
+| Pocket2Mol | scaffold hopping | pocket2mol + scaffold |
+| GraphBP | scaffold hopping | graphbp + scaffold |
+| DiffSBDD | scaffold hopping | diffsbdd + scaffold |
+| DiffBP | scaffold hopping | diffbp + scaffold |
+| TargetDiff | scaffold hopping | targetdiff + scaffold |
+| Pocket2Mol | side chain decoration | pocket2mol + sidechain |
+| GraphBP | side chain decoration | graphbp + sidechain |
+| DiffSBDD | side chain decoration | diffsbdd + sidechain |
+| DiffBP | side chain decoration | diffbp + sidechain |
+| TargetDiff | side chain decoration | targetdiff + sidechain |
 
 Note that D3FG and FLAG are not compatible with the extended tasks, and D3FG utilizes 2-stage-training strategies, so if you want to train D3FG yourself, you need to run:
+
 ```
-python train.py --config ./configs/denovo/train/d3fg_fg.yml --logdir ./logs/denovo/d3fg_fg 
-python train.py --config ./configs/denovo/train/d3fg_linker.yml --logdir ./logs/denovo/d3fg_linker 
+python train.py --config ./configs/denovo/train/d3fg_fg.yml --logdir ./logs/denovo/d3fg_fg
+python train.py --config ./configs/denovo/train/d3fg_linker.yml --logdir ./logs/denovo/d3fg_linker
 ```
 
 #### 2. Also, you can use our pretrained ones from Google Drives [], the corresponding pretrained data file names to different tasks and models are provided in the table below:
@@ -203,6 +222,7 @@ python train.py --config ./configs/denovo/train/d3fg_linker.yml --logdir ./logs/
 TODO: Table with pretrained models
 
 Download the pretrained `.pt` checkpoints that you need, and copy them into `./logs/`, which will lead to the following directory structure:
+
 ```
 # TODO
 - CBGBench
@@ -220,7 +240,7 @@ Download the pretrained `.pt` checkpoints that you need, and copy them into `./l
                 - pretrain
                     - checkpoints
                         - 4848000.pt
-            ... 
+            ...
         - frag
             - diffbp
                 - pretrain
@@ -231,39 +251,45 @@ Download the pretrained `.pt` checkpoints that you need, and copy them into `./l
 ```
 
 ## Generation on test sets
+
 Once the model is trained, you can draw samples from them on the test pockets, with the following:
 
 ```
 bash generate.sh --method {method} --task {task} --tag {tag} --checkpoint {ckpt_number}
 ```
 
-In the command, {method} and {task} pair can be found in the former Table on method-task pairs. {tag} should be replaced with `selftrain` or `pretrain`, according to the checkpoints you use. 
+In the command, {method} and {task} pair can be found in the former Table on method-task pairs. {tag} should be replaced with `selftrain` or `pretrain`, according to the checkpoints you use.
 If the --checkpoint parameter is provided without a number, it will automatically find the latest `.pt` file. If a number is provided, it will use the specified checkpoint file.
 
-For example, if you want to generate samples on the test set for *de novo* design with *self-trained* *targetdiff* model, you can run: 
+For example, if you want to generate samples on the test set for _de novo_ design with _self-trained_ _targetdiff_ model, you can run:
+
 ```
-bash generate.sh --method targetdiff --task denovo --tag selftrain --checkpoint 
+bash generate.sh --method targetdiff --task denovo --tag selftrain --checkpoint
 ```
+
 Or if you want to test the checkpoint of the 100000-th.
+
 ```
 bash generate.sh --method targetdiff --task denovo --tag selftrain --checkpoint 100000
 ```
 
 Note that `D3FG` uses a two-step generation strategy, so the command should be
+
 ```
 bash generate.sh --method d3fg_fg --task denovo --tag {tag} --checkpoint  # generate the functional groups
 bash generate.sh --method d3fg_linker --task denovo --tag {tag} --checkpoint # generate the linkers
 ```
 
 ## Evaluation
-Run the following: 
+
+Run the following:
+
 ```
 cd evaluate_scripts
 bash evaluate.sh --method {method} --task {task} --tag {tag}
 ```
 
 For example, if you have trained TargetDiff by yourself, run
-
 
 ```
 bash evaluate.sh --method targetdiff --task denovo --tag selftrain
@@ -277,21 +303,24 @@ Or if you have downloaded pretrained models, please run
 
 ```
 cd evaluate_scripts
-bash bash evaluate.sh --method {method} --task {task} --tag pretrained 
+bash bash evaluate.sh --method {method} --task {task} --tag pretrained
 ```
 
 ## TODO List
+
 1. Use the pretrained models to generate molecules on real-world targets flexibly.
 
 2. Include more models, such as 3DSBDD, DecompDiff, VoxMol, and LiGAN.
 
 ## Contribution
+
 The codebase is initialized by Haitao Lin, with the [CBGbench v1](https://arxiv.org/html/2406.10840v1) as our motivation; The subsequent running of the code repository will be managed by Guojiang Zhao and his team of [DP Technology](https://www.dp.tech).
 
 If you find the repository is helpful to your research or projects, please refer to our benchmark paper:
+
 ```
 @misc{lin2024cbgbench,
-      title={CBGBench: Fill in the Blank of Protein-Molecule Complex Binding Graph}, 
+      title={CBGBench: Fill in the Blank of Protein-Molecule Complex Binding Graph},
       author={Haitao Lin and Guojiang Zhao and Odin Zhang and Yufei Huang and Lirong Wu and Zicheng Liu and Siyuan Li and Cheng Tan and Zhifeng Gao and Stan Z. Li},
       year={2024},
       eprint={2406.10840},
@@ -300,9 +329,10 @@ If you find the repository is helpful to your research or projects, please refer
 ```
 
 And our former works of DiffBP and D3FG:
+
 ```
 @misc{lin2022diffbp,
-      title={DiffBP: Generative Diffusion of 3D Molecules for Target Protein Binding}, 
+      title={DiffBP: Generative Diffusion of 3D Molecules for Target Protein Binding},
       author={Haitao Lin and Yufei Huang and Meng Liu and Xuanjing Li and Shuiwang Ji and Stan Z. Li},
       year={2022},
       eprint={2211.11214},
