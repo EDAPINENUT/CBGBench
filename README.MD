@@ -23,7 +23,7 @@ This is the official code repository of the paper 'CBGBench: Fill in the Blank o
 
 These models are initially established for `de novo` molecule generation, and we extend more tasks including `linker design`, `fragment growing`, `scaffold hopping`, and `side chain decoration`.
 <p align="center">
-    <img src="scripts/tasks.jpg" width="700" class="center" alt="Extend Tasks"/>
+    <img src="scripts/tasks.jpg" width="600" class="center" alt="Extend Tasks"/>
     <br/>
 </p>
 
