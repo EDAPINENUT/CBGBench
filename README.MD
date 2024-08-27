@@ -5,7 +5,7 @@
 </p>
 
 *CBGBench: Complex Binding Graph Benchmark* is a benchmark for generative target-aware molecule design.
-
+**[Paper [DiffBP]](https://arxiv.org/abs/2211.11214)** | **[Paper [D3FG]](https://arxiv.org/abs/2306.13769)** | **[Benchmark](https://arxiv.org/abs/2406.10840)**
 
 ## Introduction
 
