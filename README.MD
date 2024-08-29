@@ -357,5 +357,5 @@ And our former works of DiffBP and D3FG:
 ```
 
 ----
-## Liscence
+## Licence
 This project is licensed under the terms of the LGPL-3.0 license.
