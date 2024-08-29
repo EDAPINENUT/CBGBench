@@ -355,3 +355,6 @@ And our former works of DiffBP and D3FG:
     url={https://openreview.net/forum?id=lRG11M91dx}
 }
 ```
+
+----
+This project is licensed under the terms of the LGPL-3.0 license.
