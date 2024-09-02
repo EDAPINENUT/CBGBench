@@ -358,4 +358,4 @@ And our former works of DiffBP and D3FG:
 
 ----
 ## Licence
-This project is licensed under the terms of the LGPL-3.0 license.
+This project is licensed under the terms of the GPL-3.0 license.
