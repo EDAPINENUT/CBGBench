@@ -338,13 +338,14 @@ If you find the repository is helpful to your research or projects, please refer
 And our former works of DiffBP and D3FG:
 
 ```
-@misc{lin2022diffbp,
-      title={DiffBP: Generative Diffusion of 3D Molecules for Target Protein Binding},
-      author={Haitao Lin and Yufei Huang and Meng Liu and Xuanjing Li and Shuiwang Ji and Stan Z. Li},
-      year={2022},
+@misc{lin2024diffbpgenerativediffusion3d,
+      title={DiffBP: Generative Diffusion of 3D Molecules for Target Protein Binding}, 
+      author={Haitao Lin and Yufei Huang and Odin Zhang and Siqi Ma and Meng Liu and Xuanjing Li and Lirong Wu and Jishui Wang and Tingjun Hou and Stan Z. Li},
+      year={2024},
       eprint={2211.11214},
       archivePrefix={arXiv},
-      primaryClass={id='q-bio.BM' full_name='Biomolecules' is_active=True alt_name=None in_archive='q-bio' is_general=False description='DNA, RNA, proteins, lipids, etc.; molecular structures and folding kinetics; molecular interactions; single-molecule manipulation.'}
+      primaryClass={q-bio.BM},
+      url={https://arxiv.org/abs/2211.11214}, 
 }
 @inproceedings{
     lin2023functionalgroupbased,
