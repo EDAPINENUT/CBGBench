@@ -9,7 +9,10 @@ from repo.utils.protein.constants import (
     restype_to_heavyatom_names, 
     BBHeavyAtom
 )
+from .icoord import get_chi_angles, get_backbone_torsions
+
 pdb_parser = PDBParser(QUIET = True)
+ptable = Chem.GetPeriodicTable()
 
 class ParsingException(Exception):
     pass
@@ -183,19 +186,141 @@ class PDBProteinFA(object):
         return block
 
 
-
-
-
 def _get_residue_heavyatom_info(res: Residue):
     pos_heavyatom = np.zeros([max_num_heavyatoms, 3], dtype=np.float32)
     mask_heavyatom = np.zeros([max_num_heavyatoms, ], dtype=np.bool_)
+    element_heavyatom = np.zeros([max_num_heavyatoms, ], dtype=np.int_)
+
     restype = AA(res.get_resname())
-    for idx, atom_name in enumerate(restype_to_heavyatom_names[restype]):
+    for idx, (atom_name, element_name) in enumerate(zip(restype_to_heavyatom_names[restype], res.get_atoms())):
         if atom_name == '': continue
         if atom_name in res:
             pos_heavyatom[idx] = np.array(res[atom_name].get_coord().tolist(), dtype=pos_heavyatom.dtype)
             mask_heavyatom[idx] = True
-    return pos_heavyatom, mask_heavyatom
+            element_heavyatom[idx] = ptable.GetAtomicNumber(element_name.element)
+    return pos_heavyatom, mask_heavyatom, element_heavyatom
+
+
+def parse_biopython_structure_frame_sidechain(pdb_path, unknown_threshold=1.0, max_resseq=None):
+
+    entity = pdb_parser.get_structure(id, pdb_path)[0]
+    chains = Selection.unfold_entities(entity, 'C')
+    # chains.sort(key=lambda c: c.get_id())
+    # chains = Selection.unfold_entities(entity, 'C')
+    chains.sort(key=lambda c: c.get_id())
+    data = EasyDict({
+        'chain_id': [], 'chain_nb': [],
+        'resseq': [], 'icode': [], 'res_nb': [],
+        'aa': [], 'element_heavyatom': [],
+        'pos_heavyatom': [], 'mask_heavyatom': [],
+        'phi': [], 'phi_mask': [],
+        'psi': [], 'psi_mask': [],
+        'chi': [], 'chi_alt': [], 'chi_mask': [], 'chi_complete': [],
+    })
+    tensor_types = {
+        'chain_nb': np.int_,
+        'resseq': np.int_,
+        'res_nb': np.int_,
+        'aa': np.int_,
+        'pos_heavyatom': np.stack,
+        'mask_heavyatom': np.stack,
+        'element_heavyatom': np.stack,
+
+        'phi': np.float32,
+        'phi_mask': np.bool_,
+        'psi': np.float32,
+        'psi_mask': np.bool_,
+
+        'chi': np.stack,
+        'chi_alt': np.stack,
+        'chi_mask': np.stack,
+        'chi_complete': np.bool_,
+    }
+
+    count_aa, count_unk = 0, 0
+
+    for i, chain in enumerate(chains):
+        chain.atom_to_internal_coordinates()
+        seq_this = 0   # Renumbering residues
+        residues = Selection.unfold_entities(chain, 'R')
+        residues.sort(key=lambda res: (res.get_id()[1], res.get_id()[2]))   # Sort residues by resseq-icode
+        for _, res in enumerate(residues):
+            resname = res.get_resname()
+            if not AA.is_aa(resname): continue
+            if not (res.has_id('CA') and res.has_id('C') and res.has_id('N')): continue
+            restype = AA(resname)
+            count_aa += 1
+            if restype == AA.UNK: 
+                count_unk += 1
+                continue
+
+            # Chain info
+            data.chain_id.append(chain.get_id())
+            data.chain_nb.append(i)
+
+            # Residue types
+            data.aa.append(restype) # Will be automatically cast to torch.long
+
+            # Heavy atoms
+            pos_heavyatom, mask_heavyatom, element_heavytaom = _get_residue_heavyatom_info(res)
+            data.pos_heavyatom.append(pos_heavyatom)
+            data.mask_heavyatom.append(mask_heavyatom)
+            data.element_heavyatom.append(element_heavytaom)
+
+            # Backbone torsions
+            phi, psi, _ = get_backbone_torsions(res)
+            if phi is None:
+                data.phi.append(0.0)
+                data.phi_mask.append(False)
+            else:
+                data.phi.append(phi)
+                data.phi_mask.append(True)
+            if psi is None:
+                data.psi.append(0.0)
+                data.psi_mask.append(False)
+            else:
+                data.psi.append(psi)
+                data.psi_mask.append(True)
+
+            # Chi
+            chi, chi_alt, chi_mask, chi_complete = get_chi_angles(restype, res)
+            data.chi.append(chi)
+            data.chi_alt.append(chi_alt)
+            data.chi_mask.append(chi_mask)
+            data.chi_complete.append(chi_complete)
+
+            # Sequential number
+            resseq_this = int(res.get_id()[1])
+            icode_this = res.get_id()[2]
+            if seq_this == 0:
+                seq_this = 1
+            else:
+                d_CA_CA = np.linalg.norm(data.pos_heavyatom[-2][BBHeavyAtom.CA] - data.pos_heavyatom[-1][BBHeavyAtom.CA], ord=2).item()
+                if d_CA_CA <= 4.0:
+                    seq_this += 1
+                else:
+                    d_resseq = resseq_this - data.resseq[-1]
+                    seq_this += max(2, d_resseq)
+
+            data.resseq.append(resseq_this)
+            data.icode.append(icode_this)
+            data.res_nb.append(seq_this)
+
+    if len(data.aa) == 0:
+        return None
+
+    if (count_unk / count_aa) >= unknown_threshold:
+        return None
+
+    # seq_map = {}
+    # for i, (chain_id, resseq, icode) in enumerate(zip(data.chain_id, data.resseq, data.icode)):
+    #     seq_map[(chain_id, resseq, icode)] = i
+
+    for key, convert_fn in tensor_types.items():
+        data[key] = convert_fn(data[key])
+
+    return data
+
 
 
 def parse_biopython_structure_frame(pdb_path, unknown_threshold=1.0, max_resseq=None):
@@ -246,7 +371,7 @@ def parse_biopython_structure_frame(pdb_path, unknown_threshold=1.0, max_resseq=
                 data.aa.append(restype) # Will be automatically cast to torch.long
 
                 # Heavy atoms
-                pos_heavyatom, mask_heavyatom = _get_residue_heavyatom_info(res)
+                pos_heavyatom, mask_heavyatom, _ = _get_residue_heavyatom_info(res)
                 data.pos_heavyatom.append(pos_heavyatom)
                 data.mask_heavyatom.append(mask_heavyatom)
 
