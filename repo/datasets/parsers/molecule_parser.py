@@ -642,6 +642,20 @@ def parse_sdf_file_to_functional_group_linker(path):
         hybridization.append((idx, hybr))
     hybridization = sorted(hybridization)
     hybridization = [v[1] for v in hybridization]
+    row, col, edge_type = [], [], []
+    for bond in rdmol.GetBonds():
+        start = bond.GetBeginAtomIdx()
+        end = bond.GetEndAtomIdx()
+        row += [start, end]
+        col += [end, start]
+        edge_type += 2 * [bond_types[bond.GetBondType()]]
+
+    edge_index = np.array([row, col], dtype=np.longlong)
+    edge_type = np.array(edge_type, dtype=np.longlong)
+
+    perm = (edge_index[0] * rd_num_atoms + edge_index[1]).argsort()
+    edge_index = edge_index[:, perm]
+    edge_type = edge_type[perm]
 
     data['linker'] = {
         'smiles': Chem.MolToSmiles(rdmol),
@@ -656,6 +670,8 @@ def parse_sdf_file_to_functional_group_linker(path):
         'cross_bond_index': cross_bond_index_list,
         'cross_bond_type': cross_bond_type_list,
         'center_of_mass': center_of_mass,
+        'bond_index': edge_index,
+        'bond_type': edge_type,
         'atom_feature': feat_mat,
         'hybridization': hybridization
         }
