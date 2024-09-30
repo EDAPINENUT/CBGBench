@@ -69,7 +69,7 @@ if __name__ == '__main__':
     report_ref_dict = interaction_analyzer.plip_parser(report_path)
     num_interact = np.sum([v for k,v in report_dict.items()])
     report_ref_dist_dict = {k: v/num_interact for k,v in report_dict.items()}
-    ref_dict = {'dist': interact_distribution, 'ratio': report_ref_dict}
+    ref_dict = {'dist': report_ref_dist_dict, 'ratio': report_ref_dict}
     
     torch.save(gen_dict, os.path.join(result_path, 'interact_gen_results.pt'))
     torch.save(ref_dict, os.path.join(result_path, 'interact_ref_results.pt'))
