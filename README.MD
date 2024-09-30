@@ -10,7 +10,9 @@
 
 **[Paper [DiffBP]](https://arxiv.org/abs/2211.11214)** | **[Paper [D3FG]](https://arxiv.org/abs/2306.13769)** | **[Benchmark](https://arxiv.org/abs/2406.10840)**
 
-**CBGBench** joins the DeepModeling community, a community devoted to AI for science, as a sandbox-level project. [Learn more about DeepModeling](https://github.com/deepmodeling/community)
+> [!News]
+> - *Sep. 2024:* **CBGBench** has joined the DeepModeling community, a community devoted to AI for science, as a sandbox-level project. [Learn more about DeepModeling](https://github.com/deepmodeling/community)
+
 
 ## Introduction
 
