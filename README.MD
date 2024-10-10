@@ -4,6 +4,8 @@
     <br/>
 </p>
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
+<a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/Config-Hydra-89b8cd"></a>
+[![Paper](http://img.shields.io/badge/arXiv-2302.04313-B31B1B.svg)](https://arxiv.org/abs/2302.04313)
 [![Paper](https://img.shields.io/badge/arXiv-2406.10840-B31B1B.svg)](https://arxiv.org/abs/2406.10840)
 [![DeepModeling](https://img.shields.io/badge/DeepModeling-sandbox_Project-blue)](https://github.com/deepmodeling)
 
