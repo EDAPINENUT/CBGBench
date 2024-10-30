@@ -14,7 +14,7 @@
 **[Paper [DiffBP]](https://arxiv.org/abs/2211.11214)** | **[Paper [D3FG]](https://arxiv.org/abs/2306.13769)** | **[Benchmark](https://arxiv.org/abs/2406.10840)**
 
 > [!NOTE]
-> - *Oct. 2025:* [**CBGBench** paper](https://arxiv.org/abs/2406.10840) has just integrated [MolCraft](https://arxiv.org/abs/2404.12141) and [VoxBind](https://arxiv.org/html/2405.03961v1) into evaluation, and the integration of their codes is in process.
+> - *Oct. 2024:* [**CBGBench** paper](https://arxiv.org/abs/2406.10840) has just integrated [MolCraft](https://arxiv.org/abs/2404.12141) and [VoxBind](https://arxiv.org/html/2405.03961v1) into evaluation, and the integration of their codes is in process.
 > - *Sep. 2024:* **CBGBench** has joined the DeepModeling community, a community devoted to AI for science, as a sandbox-level project. [Learn more about DeepModeling](https://github.com/deepmodeling/community)
 
 
