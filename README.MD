@@ -6,7 +6,7 @@
 
 
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
-[![Paper](http://img.shields.io/badge/arXiv-2302.04313-B31B1B.svg)](https://arxiv.org/abs/2302.04313)
+[![Paper](http://img.shields.io/badge/arXiv-2406.10840-B31B1B.svg)](https://arxiv.org/abs/2406.10840)
 [![DeepModeling](https://img.shields.io/badge/DeepModeling-sandbox_Project-blue)](https://github.com/deepmodeling)
 
 *CBGBench: Complex Binding Graph Benchmark* is a benchmark for generative target-aware molecule design.
