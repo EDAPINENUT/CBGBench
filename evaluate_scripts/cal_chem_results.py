@@ -127,22 +127,22 @@ def main(root_directory):
 
     final_results.update({
         "Score Only": {
-            "Improvement (%) in Vina Mean": score_means[0],
-            "Delta Binding (%)": score_means[1],
-            "Mean Vina": score_means[2],
-            "Ligand Efficiency Mean": score_means[3]
+            "Improvement (MPBG%) in Vina Mean": score_means[0],
+            "Delta Binding (IMP%)": score_means[1],
+            "Mean Vina (Evina)": score_means[2],
+            "Ligand Efficiency Mean (LBE)": score_means[3]
         },
         "Minimize": {
-            "Improvement (%) in Vina Mean": minimize_means[0],
-            "Delta Binding (%)": minimize_means[1],
-            "Mean Vina": minimize_means[2],
-            "Ligand Efficiency Mean": minimize_means[3]
+            "Improvement (MPBG%) in Vina Mean": minimize_means[0],
+            "Delta Binding (IMP%)": minimize_means[1],
+            "Mean Vina (Evina)": minimize_means[2],
+            "Ligand Efficiency Mean (LBE)": minimize_means[3]
         },
         "Dock": {
-            "Improvement (%) in Vina Mean": dock_means[0],
-            "Delta Binding (%)": dock_means[1],
-            "Mean Vina": dock_means[2],
-            "Ligand Efficiency Mean": dock_means[3]
+            "Improvement (MPBG%) in Vina Mean": dock_means[0],
+            "Delta Binding (IMP%)": dock_means[1],
+            "Mean Vina (Evina)": dock_means[2],
+            "Ligand Efficiency Mean (LBE)": dock_means[3]
         }
     })
 
