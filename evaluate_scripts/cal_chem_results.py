@@ -108,22 +108,22 @@ def main(root_directory):
 
     # Print results
     print('Score Only:')
-    print(f"Improvement (%) in Vina Mean: {score_means[0]}")
-    print(f"Delta Binding (%): {score_means[1]}")
-    print(f"Mean Vina: {score_means[2]}")
-    print(f"Ligand Efficiency Mean: {score_means[3]}")
+    print(f"Improvement (MPBG%) in Vina Mean: {score_means[0]}")
+    print(f"Delta Binding (IMP%): {score_means[1]}")
+    print(f"Mean Vina (Evina): {score_means[2]}")
+    print(f"Ligand Efficiency Mean (LBE): {score_means[3]}")
 
     print('Minimize:')
-    print(f"Improvement (%) in Vina Mean: {minimize_means[0]}")
-    print(f"Delta Binding (%): {minimize_means[1]}")
-    print(f"Mean Vina: {minimize_means[2]}")
-    print(f"Ligand Efficiency Mean: {minimize_means[3]}")
+    print(f"Improvement (MPBG%)  in Vina Mean: {minimize_means[0]}")
+    print(f"Delta Binding (IMP%): {minimize_means[1]}")
+    print(f"Mean Vina (Evina): {minimize_means[2]}")
+    print(f"Ligand Efficiency Mean (LBE): {minimize_means[3]}")
 
     print('Dock:')
-    print(f"Improvement (%) in Vina Mean: {dock_means[0]}")
-    print(f"Delta Binding (%): {dock_means[1]}")
-    print(f"Mean Vina: {dock_means[2]}")
-    print(f"Ligand Efficiency Mean: {dock_means[3]}")
+    print(f"Improvement (MPBG%)  in Vina Mean: {dock_means[0]}")
+    print(f"Delta Binding (IMP%): {dock_means[1]}")
+    print(f"Mean Vina (Evina): {dock_means[2]}")
+    print(f"Ligand Efficiency Mean (LBE): {dock_means[3]}")
 
     final_results.update({
         "Score Only": {
