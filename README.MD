@@ -234,7 +234,7 @@ python train.py --config ./configs/denovo/train/d3fg_fg.yml --logdir ./logs/deno
 python train.py --config ./configs/denovo/train/d3fg_linker.yml --logdir ./logs/denovo/d3fg_linker
 ```
 
-#### 2. Also, you can use our pretrained ones from Google Drives [], the corresponding pretrained data file names to different tasks and models are provided in the table below:
+#### 2. Also, you can use our pretrained ones from Google Drives [TODO: Release the pretrained models], the corresponding pretrained data file names to different tasks and models are provided in the table below:
 
 TODO: Table with pretrained models
 
@@ -329,11 +329,13 @@ bash bash evaluate.sh --method {method} --task {task} --tag pretrained
 
 2. Include more models, such as 3DSBDD, DecompDiff, VoxMol, and LiGAN.
 
+3. Release the pretrained models, test the feasibility and reproducivity once the paper is published.
+
 ## Contribution
 
-The codebase is initialized by Haitao Lin, with the [CBGbench v1](https://arxiv.org/html/2406.10840v1) as our motivation; The subsequent running of the code repository will be managed by Guojiang Zhao and his team of [DP Technology](https://www.dp.tech).
+The codebase is initialized by Haitao Lin, with the [CBGbench v1](https://arxiv.org/html/2406.10840v2) as our motivation; The subsequent running of the code repository will be managed by Guojiang Zhao and his team of [DP Technology](https://www.dp.tech).
 
-If you find the repository is helpful to your research or projects, please refer to our benchmark paper:
+If you find the repository is helpful to your research or projects, please cite to our benchmark paper as reference:
 
 ```
 @misc{lin2024cbgbench,
