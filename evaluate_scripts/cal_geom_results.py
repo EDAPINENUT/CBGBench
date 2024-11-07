@@ -79,8 +79,8 @@ if __name__ == "__main__":
 
     filtered_c_bond_length_dict = {k: round(v, 4) for k, v in c_bond_length_dict.items() if v is not None}
     filtered_c_bond_angle_dict = {k: round(v, 4) for k, v in c_bond_angle_dict.items() if v is not None}
-    filtered_c_bond_length_dict['JSD_BL'] = round(mean([v for _, v in filtered_c_bond_length_dict.items()]), 4)
-    filtered_c_bond_angle_dict['JSD_BA'] = round(mean([v for _, v in filtered_c_bond_angle_dict.items()]), 4)
+    filtered_c_bond_length_dict['JSD_BL'] = round(np.mean([v for _, v in filtered_c_bond_length_dict.items()]), 4)
+    filtered_c_bond_angle_dict['JSD_BA'] = round(np.mean([v for _, v in filtered_c_bond_angle_dict.items()]), 4)
 
     df_bond_length = pd.DataFrame.from_dict(filtered_c_bond_length_dict, orient='index', columns=['value']).reset_index()
     df_bond_length.columns = ['key', 'value']
