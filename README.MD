@@ -299,6 +299,7 @@ Note that `D3FG` uses a two-step generation strategy, so the command should be
 bash generate.sh --method d3fg_fg --task denovo --tag {tag} --checkpoint  # generate the functional groups
 bash generate.sh --method d3fg_linker --task denovo --tag {tag} --checkpoint # generate the linkers
 ```
+We give the selected generated molecules by state-of-the-art methods in our benchmark for the de novo task, which can be downloaded from the [Google Drive](https://drive.google.com/drive/folders/14A_fOf_1088YHedz7Cbe-SIckZ0ltJGQ). You can directly download them for evaluation. Besides, in each directory, there are metrics files ending with `.pt` as the raw evaluation results.
 
 ## Evaluation
 
