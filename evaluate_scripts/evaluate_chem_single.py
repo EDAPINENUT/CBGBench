@@ -158,7 +158,7 @@ if __name__ == '__main__':
         torch.save(ref_result, os.path.join(result_path, 'chem_reference_results.pt'))
         logger.info('Reference ligand evaluation done!')
 
-        df = pd.read_csv(os.path.join(result_path, 'molecule_properties.csv'),ignore_index=True)
+        df = pd.read_csv(os.path.join(result_path, 'molecule_properties.csv'))
         df = df.append({'file_names': 'reference', 'smiles': ref_result['smiles'],
                         'vina_dock_result': ref_result['vina']['dock']['affinity'],
                         'vina_min_result': ref_result['vina']['minimize']['affinity'],
