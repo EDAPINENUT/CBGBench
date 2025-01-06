@@ -106,8 +106,7 @@ Table: The data file name corresponding to different methods and tasks.
 | DiffBP | de novo | data/pl/crossdocked_v1.1_rmsd1.0_pocket10_processed_fullatom.lmdb |
 | TargetDiff | de novo | data/pl/crossdocked_v1.1_rmsd1.0_pocket10_processed_fullatom.lmdb |
 | FLAG | de novo | data/pl_arfg/crossdocked_v1.1_rmsd1.0_pocket10_processed_arfuncgroup.lmdb |
-| D3FG_fg | de novo | data/pl_fg/crossdocked_v1.1_rmsd1.0_pocket10_processed_funcgroup.lmdb |
-| D3FG_linker | de novo | data/pl/crossdocked_v1.1_rmsd1.0_pocket10_processed_linker.lmdb |
+| D3FG | de novo | data/pl_fg/crossdocked_v1.1_rmsd1.0_pocket10_processed_funcgroup.lmdb |
 | Pocket2Mol | fragment | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_frag.lmdb |
 | GraphBP | fragment | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_frag.lmdb |
 | DiffSBDD | fragment | data/pl_decomp/crossdocked_v1.1_rmsd1.0_pocket10_processed_frag.lmdb |
