@@ -336,7 +336,7 @@ bash bash evaluate.sh --method {method} --task {task} --tag pretrained
 
 ## Contribution
 
-The codebase is initialized by Haitao Lin, with the [CBGbench v1](https://arxiv.org/html/2406.10840v2) as our motivation; The subsequent running of the code repository will be managed by Guojiang Zhao and his team of [DP Technology](https://www.dp.tech).
+The codebase is initialized by Haitao Lin and Odin Zhang, with the [CBGbench v1](https://arxiv.org/html/2406.10840v2) as our motivation; The subsequent running of the code repository will be managed by Haitao Lin, Guojiang Zhao and his team of [DP Technology](https://www.dp.tech).
 
 If you find the repository is helpful to your research or projects, please cite to our benchmark paper as reference:
 
