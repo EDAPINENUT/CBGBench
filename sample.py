@@ -106,7 +106,7 @@ def main():
     parser.add_argument('-s', '--seed', type=int, default=2024)
     parser.add_argument('-d', '--device', type=str, default='cuda')
     parser.add_argument('-b', '--batch_size', type=int, default=16)
-    parser.add_argument('-ckpt', '--checkpoint', type=str, default='1')
+    parser.add_argument('-ckpt', '--checkpoint', type=str, default='pretrained')
     parser.add_argument('--threshold', type=int, default=-1)
     parser.add_argument('--threshold_ratio', type=float, default=0.8)
 
@@ -114,13 +114,13 @@ def main():
  
     # Load configs
     config, config_name = load_config(args.config)
-
-    config.model.checkpoint = os.path.join(
-                "/".join(config.model.checkpoint.split('/')[:4]), 
-                args.tag, 
-                'checkpoints',
-                args.checkpoint + '.pt'
-            )
+    if args.checkpoint is not None:
+        config.model.checkpoint = os.path.join(
+            "/".join(config.model.checkpoint.split('/')[:4]), 
+            args.tag, 
+            'checkpoints',
+            args.checkpoint + '.pt'
+        )
 
     if 'fg' not in config.model.type:
         from repo.utils.configuration import set_num_atom_type, set_num_bond_type
