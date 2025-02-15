@@ -12,7 +12,7 @@ def get_e3_gnn(cfg, num_classes=None, num_edge_classes=None):
         return UniTransformer(cfg)
     elif cfg.type == 'gvptransformer':
         return GVPTransformer(cfg)
-    elif cfg.type == 'itatransformer':
-        return ITATransformer(cfg)
+    elif cfg.type == 'ipatransformer':
+        return IPATransformer(cfg)
     else:
         raise ValueError(f'Unknown model type: {cfg.type}')
