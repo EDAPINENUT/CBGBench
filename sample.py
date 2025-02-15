@@ -144,7 +144,7 @@ def main():
 
     mark = 0
     
-    log_dir = get_new_log_dir(dr, prefix='', tag=args.tag)
+    log_dir = get_new_log_dir(dr, prefix='', tag=args.tag if config.model.type != 'difffg' else 'context')
 
     logger = get_logger('sample', log_dir)
 
