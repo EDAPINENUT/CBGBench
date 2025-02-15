@@ -238,14 +238,13 @@ python train.py --config ./configs/denovo/train/d3fg_fg.yml --logdir ./logs/deno
 python train.py --config ./configs/denovo/train/d3fg_linker.yml --logdir ./logs/denovo/d3fg_linker
 ```
 
-#### 2. Also, you can use our pretrained ones from Google Drives [TODO: Release the pretrained models], the corresponding pretrained data file names to different tasks and models are provided in the table below:
+#### 2. Also, you can use our pretrained ones from (Google Drives)[https://drive.google.com/drive/folders/14ycws-pVKAKt-rRTLL4VVcu7WT_T9mZY], the corresponding pretrained data file names to different tasks and models are provided in the form below:
 
-TODO: Table with pretrained models
+`{task}/{method}/pretrained.pt`
 
 Download the pretrained `.pt` checkpoints that you need, and copy them into `./logs/`, which will lead to the following directory structure:
 
 ```
-# TODO
 - CBGBench
     - logs
         - denovo
