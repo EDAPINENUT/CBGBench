@@ -252,21 +252,21 @@ Download the pretrained `.pt` checkpoints that you need, and copy them into `./l
             - d3fg_fg
                 - pretrain
                     - checkpoints
-                        - 951000.pt
+                        - pretrained.pt
             - d3fg_linker
                 - pretrain
                     - checkpoints
-                        - 4840000.pt
+                        - pretrained.pt
             - diffbp
                 - pretrain
                     - checkpoints
-                        - 4848000.pt
+                        - pretrained.pt
             ...
         - frag
             - diffbp
                 - pretrain
                     - checkpoints
-                        - 476000.pt
+                        - pretrained.pt
             ...
         ...
 ```
