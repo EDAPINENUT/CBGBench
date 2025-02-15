@@ -282,7 +282,13 @@ bash generate.sh --method {method} --task {task} --tag {tag} --checkpoint {ckpt_
 In the command, {method} and {task} pair can be found in the former Table on method-task pairs. {tag} should be replaced with `selftrain` or `pretrain`, according to the checkpoints you use.
 If the --checkpoint parameter is provided without a number, it will automatically find the latest `.pt` file. If a number is provided, it will use the specified checkpoint file.
 
-For example, if you want to generate samples on the test set for _de novo_ design with _self-trained_ _targetdiff_ model, you can run:
+For example, if you want to generate samples on the test set for _de novo_ design with the downloaded _pretrained_ _targetdiff_ model, you can run:
+
+```
+bash generate.sh --method targetdiff --task denovo --tag pretrain --checkpoint pretrained
+```
+
+If you want to generate samples on the test set for _de novo_ design with _self-trained_ _targetdiff_ model, you can run:
 
 ```
 bash generate.sh --method targetdiff --task denovo --tag selftrain --checkpoint
