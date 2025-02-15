@@ -11,7 +11,7 @@ from torch_geometric.nn import radius_graph, knn_graph
 from repo.models.utils.geometry import *
 from repo.models.utils.so3 import *
 
-class ITATransformer(nn.Module):
+class IPATransformer(nn.Module):
     def __init__(self, cfg):
         super().__init__()
         self.cfg = cfg
