@@ -411,7 +411,7 @@ class PocketLigandPairDatasetFuncGroup(Dataset, LMDataBase):
 
         self.processed_path = os.path.join(self.procesed_dir,
                                            os.path.basename(self.raw_path) + f'_processed_{version}.lmdb')
-        self.name2id_path = (os.path.join(self.procesed_dir, 'crossdocked_name2id.pt') 
+        self.name2id_path = (os.path.join(self.procesed_dir, 'crossdocked_name2id_{}.pt'.format(version)) 
                              if 'crossdocked' in self.raw_path else os.path.join(self.procesed_dir, self.raw_path.split('/')[-1] + '_name2id.pt'))
 
         self.transform = transform
