@@ -106,7 +106,7 @@ def main():
     parser.add_argument('-s', '--seed', type=int, default=2024)
     parser.add_argument('-d', '--device', type=str, default='cuda')
     parser.add_argument('-b', '--batch_size', type=int, default=16)
-    parser.add_argument('-ckpt', '--checkpoint', type=str, default='pretrained')
+    parser.add_argument('-ckpt', '--checkpoint', type=str, default=None)
     parser.add_argument('--threshold', type=int, default=-1)
     parser.add_argument('--threshold_ratio', type=float, default=0.8)
 
