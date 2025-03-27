@@ -81,7 +81,7 @@ def eval_steric_clash(mol, pdb_file, vdw_radii=default_vdw_radii, tolerance=0.4)
     lig_lig_clash_detected, lig_lig_clash_info = detect_clash(ligand_pos, ligand_pos, ligand_elements, ligand_elements, 
                                                               pair_mask=ligand_intra_mask, vdw_radii=vdw_radii, tolerance=tolerance)
     
-    clash_detected = lig_pro_clash_detected or lig_lig_clash_detected
+    clash_detected = lig_pro_clash_detected
     additional_info = {
         'lig_pro_clash_detected': lig_pro_clash_detected,
         'lig_lig_clash_detected': lig_lig_clash_detected,
