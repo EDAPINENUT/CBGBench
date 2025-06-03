@@ -339,13 +339,13 @@ bash bash evaluate.sh --method {method} --task {task} --tag pretrained
 
 2. Include more models, such as 3DSBDD, DecompDiff, VoxMol, and LiGAN.
 
-3. Release the pretrained models, test the feasibility and reproducivity once the paper is published.
+~~3. Release the pretrained models, and test the feasibility and reproducibility once the paper is published.~~
 
 ## Contribution
 
 The codebase is initialized by Haitao Lin and Odin Zhang, with the [CBGbench v1](https://arxiv.org/html/2406.10840v2) as our motivation; The subsequent running of the code repository will be managed by Haitao Lin, Guojiang Zhao and his team of [DP Technology](https://www.dp.tech).
 
-If you find the repository is helpful to your research or projects, please cite to our benchmark paper as reference:
+If you find the repository is helpful to your research or projects, please cite our benchmark paper as reference:
 
 ```
 @inproceedings{
